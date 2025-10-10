@@ -1,8 +1,9 @@
-package org.example.model;
+package org.example.models;
 
 import org.example.enums.BorrowingStatus;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Borrowing {
     private Long id;
@@ -14,86 +15,69 @@ public class Borrowing {
     private BorrowingStatus status;
     private String notes;
 
-    public Borrowing() {
-        this.borrowDate = LocalDateTime.now();
-        this.status = BorrowingStatus.ACTIVE;
-    }
-
-    public Borrowing(Long userId, Long gameId, LocalDateTime dueDate) {
-        this();
+    public Borrowing(Long userId,
+                     Long gameId,
+                     LocalDateTime dueDate,
+                     String notes) {
+        this.id = ThreadLocalRandom.current().nextLong();
         this.userId = userId;
         this.gameId = gameId;
         this.dueDate = dueDate;
+        this.notes = notes;
     }
 
-    // Getters and Setters
-    public Long getId() {
+    public Long getId()
+    {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getUserId() {
+    public Long getUserId()
+    {
         return userId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getGameId() {
+    public Long getGameId()
+    {
         return gameId;
     }
 
-    public void setGameId(Long gameId) {
-        this.gameId = gameId;
-    }
-
-    public LocalDateTime getBorrowDate() {
+    public LocalDateTime getBorrowDate()
+    {
         return borrowDate;
     }
 
-    public void setBorrowDate(LocalDateTime borrowDate) {
-        this.borrowDate = borrowDate;
-    }
-
-    public LocalDateTime getDueDate() {
+    public LocalDateTime getDueDate()
+    {
         return dueDate;
     }
 
-    public void setDueDate(LocalDateTime dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public LocalDateTime getReturnDate() {
+    public LocalDateTime getReturnDate()
+    {
         return returnDate;
     }
 
-    public void setReturnDate(LocalDateTime returnDate) {
-        this.returnDate = returnDate;
-    }
-
-    public BorrowingStatus getStatus() {
+    public BorrowingStatus getStatus()
+    {
         return status;
     }
 
-    public void setStatus(BorrowingStatus status) {
+    public void setStatus(BorrowingStatus status)
+    {
         this.status = status;
     }
 
-    public String getNotes() {
+    public String getNotes()
+    {
         return notes;
     }
 
-    public void setNotes(String notes) {
+    public void setNotes(String notes)
+    {
         this.notes = notes;
     }
 
     public boolean isOverdue() {
         return status == BorrowingStatus.ACTIVE &&
-               dueDate != null &&
                LocalDateTime.now().isAfter(dueDate);
     }
 

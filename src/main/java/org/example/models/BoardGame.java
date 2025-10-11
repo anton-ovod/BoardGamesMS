@@ -70,6 +70,11 @@ public class BoardGame {
         this.rating = Double.parseDouble(parts[10]);
     }
 
+    public Long getId()
+    {
+        return id;
+    }
+
     public String toFileString() {
         return String.format(Locale.US, "%d|%s|%s|%d|%d|%d|%d|%s|%s|%s|%.1f",
                 this.id,

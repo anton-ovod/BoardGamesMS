@@ -13,14 +13,16 @@ public class Main {
         System.out.println("Welcome to the Board Game Library Management System!");
 
         FileService fileService = new FileService();
+
+        // IO EXAMPLES OF READING AND WRITING BOARD GAMES
         List<BoardGame> games = fileService.readBoardGamesIO();
 
-        System.out.println("Available Board Games:");
+        System.out.println("[JAVA.IO] Available Board Games:");
         for (BoardGame game : games) {
             System.out.println(game);
         }
 
-        // Example: Adding a new board game
+        // Adding a new board game
         BoardGame newGame = new BoardGame(
             "Dominion",
             "Deck-building game where players compete to build the best kingdom.",
@@ -35,5 +37,16 @@ public class Main {
         );
         games.add(newGame);
         fileService.saveBoardGamesIO(games);
+
+        // NIO EXAMPLES OF READING AND WRITING BOARD GAMES
+        games = fileService.readBoardGamesNIO();
+        System.out.println("[JAVA.NIO] Available Board Games:");
+        for (BoardGame game : games) {
+            System.out.println(game);
+        }
+
+        // Removing a board game by ID (for example, the one we just added)
+        games.removeIf(g -> g.getId().equals(newGame.getId()));
+        fileService.saveBoardGamesNIO(games);
     }
 }

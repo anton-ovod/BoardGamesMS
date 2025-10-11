@@ -9,4 +9,3 @@ id|title|description|minPlayers|maxPlayers|recommendedAge|playingTimeMinutes|pub
 8|Wingspan|Engine-building game featuring birds and habitats.|1|5|10|70|Stonemaier Games|EDUCATIONAL|AVAILABLE|8.4
 9|Azul|Collect tiles to decorate the royal palace of Évora.|2|4|8|30|Next Move Games|ABSTRACT|BORROWED|8.0
 10|Root|Asymmetric game of woodland might and right.|2|4|10|90|Leder Games|WAR_GAME|AVAILABLE|8.9
-5863799876825613414|Dominion|Deck-building game where players compete to build the best kingdom.|2|4|10|30|Rio Grande Games|STRATEGY|AVAILABLE|8.4

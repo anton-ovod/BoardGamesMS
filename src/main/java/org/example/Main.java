@@ -1,17 +1,63 @@
 package org.example;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    static void main() {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        IO.println("Hello and welcome!");
+import org.example.enums.Category;
+import org.example.enums.GameStatus;
+import org.example.models.BoardGame;
+import org.example.service.FileService;
+import org.example.service.StreamService;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            IO.println("i = " + i);
-        }
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args)
+    {
+        System.out.println("Welcome to the Board Game Library Management System!");
+
+        FileService fileService = new FileService();
+        StreamService streamService = new StreamService();
+
+        // READ using java.io
+        List<BoardGame> games = fileService.readBoardGamesIO();
+        System.out.println("Read " + games.size() + " games from file.");
+
+        // ADD new games
+        BoardGame newGame = new BoardGame(
+                "The Crew",
+                "Cooperative trick-taking space adventure.",
+                2,
+                5,
+                10,
+                20,
+                "Kosmos",
+                Category.COOPERATIVE,
+                GameStatus.AVAILABLE,
+                8.3
+        );
+        games.add(newGame);
+        System.out.println("Added new game: " + newGame.getTitle());
+
+        // FILTER get games with rating >= 8.0
+        List<BoardGame> filtered = streamService.filterByRating(games, 8.0);
+        System.out.println("\nFiltered games (rating >= 8.0):");
+        filtered.forEach(g -> System.out.println(" - " + g.getTitle() + " (" + g.getRating() + ")"));
+
+        // SORT games by rating descending
+        List<BoardGame> sorted = streamService.sortByRatingDescending(filtered);
+        System.out.println("\nSorted by rating (descending):");
+        sorted.forEach(g -> System.out.println(" - " + g.getTitle() + " (" + g.getRating() + ")"));
+
+        // MAP get titles only
+        List<String> titles = streamService.mapToTitles(sorted);
+        System.out.println("\nTitles of sorted games:");
+        titles.forEach(System.out::println);
+
+        // COUNT games per category
+        Map<Category, Long> counts = streamService.countCategoryOccurrences(games);
+        System.out.println("\nCategory counts:");
+        counts.forEach((cat, count) -> System.out.println(cat + ": " + count));
+
+        // SAVE to file using java.nio
+        fileService.saveBoardGamesNIO(sorted);
+        System.out.println("\nSaved filtered & sorted games to file.");
     }
 }

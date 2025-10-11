@@ -75,6 +75,26 @@ public class BoardGame {
         return id;
     }
 
+    public Double getRating()
+    {
+        return rating;
+    }
+
+    public String getPublisher()
+    {
+        return publisher;
+    }
+
+    public Category getCategory()
+    {
+        return category;
+    }
+
+    public String getTitle()
+    {
+        return title;
+    }
+
     public String toFileString() {
         return String.format(Locale.US, "%d|%s|%s|%d|%d|%d|%d|%s|%s|%s|%.1f",
                 this.id,

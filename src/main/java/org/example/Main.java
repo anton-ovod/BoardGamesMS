@@ -4,6 +4,7 @@ import org.example.enums.Category;
 import org.example.enums.GameStatus;
 import org.example.models.BoardGame;
 import org.example.service.FileService;
+import org.example.service.StreamService;
 
 import java.util.*;
 
@@ -13,40 +14,50 @@ public class Main {
         System.out.println("Welcome to the Board Game Library Management System!");
 
         FileService fileService = new FileService();
+        StreamService streamService = new StreamService();
 
-        // IO EXAMPLES OF READING AND WRITING BOARD GAMES
+        // READ using java.io
         List<BoardGame> games = fileService.readBoardGamesIO();
+        System.out.println("Read " + games.size() + " games from file.");
 
-        System.out.println("[JAVA.IO] Available Board Games:");
-        for (BoardGame game : games) {
-            System.out.println(game);
-        }
-
-        // Adding a new board game
+        // ADD new games
         BoardGame newGame = new BoardGame(
-            "Dominion",
-            "Deck-building game where players compete to build the best kingdom.",
-            2,
-            4,
-            10,
-            30,
-            "Rio Grande Games",
-            Category.STRATEGY,
-            GameStatus.AVAILABLE,
-            8.4
+                "The Crew",
+                "Cooperative trick-taking space adventure.",
+                2,
+                5,
+                10,
+                20,
+                "Kosmos",
+                Category.COOPERATIVE,
+                GameStatus.AVAILABLE,
+                8.3
         );
         games.add(newGame);
-        fileService.saveBoardGamesIO(games);
+        System.out.println("Added new game: " + newGame.getTitle());
 
-        // NIO EXAMPLES OF READING AND WRITING BOARD GAMES
-        games = fileService.readBoardGamesNIO();
-        System.out.println("[JAVA.NIO] Available Board Games:");
-        for (BoardGame game : games) {
-            System.out.println(game);
-        }
+        // FILTER get games with rating >= 8.0
+        List<BoardGame> filtered = streamService.filterByRating(games, 8.0);
+        System.out.println("\nFiltered games (rating >= 8.0):");
+        filtered.forEach(g -> System.out.println(" - " + g.getTitle() + " (" + g.getRating() + ")"));
 
-        // Removing a board game by ID (for example, the one we just added)
-        games.removeIf(g -> g.getId().equals(newGame.getId()));
-        fileService.saveBoardGamesNIO(games);
+        // SORT games by rating descending
+        List<BoardGame> sorted = streamService.sortByRatingDescending(filtered);
+        System.out.println("\nSorted by rating (descending):");
+        sorted.forEach(g -> System.out.println(" - " + g.getTitle() + " (" + g.getRating() + ")"));
+
+        // MAP get titles only
+        List<String> titles = streamService.mapToTitles(sorted);
+        System.out.println("\nTitles of sorted games:");
+        titles.forEach(System.out::println);
+
+        // COUNT games per category
+        Map<Category, Long> counts = streamService.countCategoryOccurrences(games);
+        System.out.println("\nCategory counts:");
+        counts.forEach((cat, count) -> System.out.println(cat + ": " + count));
+
+        // SAVE to file using java.nio
+        fileService.saveBoardGamesNIO(sorted);
+        System.out.println("\nSaved filtered & sorted games to file.");
     }
 }

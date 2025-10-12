@@ -3,7 +3,6 @@ package org.example;
 import org.example.enums.Category;
 import org.example.enums.GameStatus;
 import org.example.models.BoardGame;
-import org.example.service.BoardGameXMLService;
 import org.example.service.FileService;
 import org.example.service.StreamService;
 
@@ -71,12 +70,12 @@ public class Main {
 
 
         //WRITE to BoardGame XML
-        BoardGameXMLService.writeToXML(gamesForXML);
+        FileService.saveBoardGamesXML(gamesForXML);
         System.out.println("✅ Data saved into XML.");
 
 
         //READ from BoardGame XML
-        List<BoardGame> loaded = BoardGameXMLService.readFromXML();
+        List<BoardGame> loaded = FileService.readBoardGamesXML();
         System.out.println("✅ Data read from XML:");
         loaded.forEach(System.out::println);
 

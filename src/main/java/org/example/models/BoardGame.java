@@ -34,7 +34,7 @@ public class BoardGame {
                      double rating
                      )
     {
-        this.id = ThreadLocalRandom.current().nextLong();
+        this.id = ThreadLocalRandom.current().nextLong(0, Long.MAX_VALUE);
         this.title = title;
         this.description = description;
         this.minPlayers = minPlayers;
@@ -94,6 +94,18 @@ public class BoardGame {
     {
         return title;
     }
+
+    public String getDescription() { return description; }
+
+    public int getMinPlayers() { return minPlayers; }
+
+    public int getMaxPlayers() { return maxPlayers; }
+
+    public int getRecommendedAge() { return recommendedAge; }
+
+    public int getPlayingTimeMinutes() { return playingTimeMinutes; }
+
+    public GameStatus getStatus() { return status; }
 
     public String toFileString() {
         return String.format(Locale.US, "%d|%s|%s|%d|%d|%d|%d|%s|%s|%s|%.1f",

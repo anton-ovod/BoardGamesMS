@@ -1,7 +1,10 @@
 package org.example.service;
 
+import org.example.enums.Category;
+import org.example.enums.GameStatus;
 import org.example.models.BoardGame;
 
+import javax.xml.stream.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
@@ -14,6 +17,8 @@ public class FileService
 {
     private static final String INPUT_FILE_PATH = "src/main/resources/boardgames.txt";
     private static final String OUTPUT_FILE_PATH = "src/main/resources/boardgames-modified.txt";
+    private static final String INPUT_FILE_PATH_XML = "src/main/resources/boardgames.xml";
+    private static final String OUTPUT_FILE_PATH_XML = "src/main/resources/boardgames-modified.xml";
     private static final String HEADER = "id|title|description|minPlayers|maxPlayers|recommendedAge|playingTimeMinutes|publisher|category|status|rating";
 
     public List<BoardGame> readBoardGamesIO() {
@@ -112,6 +117,134 @@ public class FileService
             System.out.println("❌ Error writing to file: " + INPUT_FILE_PATH);
             System.err.println(e.getMessage());
         }
+    }
+
+    private static void writeElem(XMLStreamWriter writer, String name, String value) throws XMLStreamException {
+        writer.writeStartElement(name);
+        writer.writeCharacters(value);
+        writer.writeEndElement();
+    }
+
+    public static void saveBoardGamesXML(List<BoardGame> games) throws Exception {
+        XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+
+        try (FileOutputStream fos = new FileOutputStream(OUTPUT_FILE_PATH_XML)) {
+            XMLStreamWriter writer = outputFactory.createXMLStreamWriter(fos, "UTF-8");
+
+            writer.writeStartDocument("UTF-8", "1.0");
+            writer.writeStartElement("boardGames");
+
+            for (BoardGame game : games) {
+                writer.writeStartElement("boardGame");
+
+                writeElem(writer, "id", String.valueOf(game.getId()));
+                writeElem(writer, "title", game.getTitle());
+                writeElem(writer, "description", game.getDescription());
+                writeElem(writer, "minPlayers", String.valueOf(game.getMinPlayers()));
+                writeElem(writer, "maxPlayers", String.valueOf(game.getMaxPlayers()));
+                writeElem(writer, "recommendedAge", String.valueOf(game.getRecommendedAge()));
+                writeElem(writer, "playingTimeMinutes", String.valueOf(game.getPlayingTimeMinutes()));
+                writeElem(writer, "publisher", game.getPublisher());
+                writeElem(writer, "category", game.getCategory().name());
+                writeElem(writer, "status", game.getStatus().name());
+                writeElem(writer, "rating", String.valueOf(game.getRating()));
+
+                writer.writeEndElement(); // </boardGame>
+            }
+
+            writer.writeEndElement(); // </boardGames>
+            writer.writeEndDocument();
+            writer.flush();
+            writer.close();
+        } catch (FileNotFoundException e) {
+            System.err.println("❌ Cannot create or write to file: " + OUTPUT_FILE_PATH_XML);
+            System.err.println(e.getMessage());
+        }
+    }
+
+
+    //Read from XML, exit if something wrong with data.
+    public static List<BoardGame> readBoardGamesXML() throws Exception {
+        List<BoardGame> games = new ArrayList<>();
+        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+
+        try (FileInputStream fis = new FileInputStream(INPUT_FILE_PATH_XML)) {
+            XMLStreamReader reader = inputFactory.createXMLStreamReader(fis);
+
+            String currentTag = null;
+
+            Long id = null;
+            String title = null, description = null, publisher = null;
+            int minPlayers = 0, maxPlayers = 0, recommendedAge = 0, playingTime = 0;
+            Category category = null;
+            GameStatus status = null;
+            double rating = 0;
+
+            while (reader.hasNext()) {
+                int event = reader.next();
+
+                if (event == XMLStreamConstants.START_ELEMENT) {
+                    currentTag = reader.getLocalName();
+                    if (currentTag.equals("boardGame")) {
+                        id = null; title = null; description = null; publisher = null;
+                        minPlayers = 0; maxPlayers = 0; recommendedAge = 0; playingTime = 0;
+                        category = null; status = null; rating = 0;
+                    }
+
+                } else if (event == XMLStreamConstants.CHARACTERS) {
+                    String text = reader.getText().trim();
+                    if (text.isEmpty()) continue;
+
+                    try {
+                        switch (currentTag) {
+                            case "id" -> id = Long.parseLong(text);
+                            case "title" -> title = text;
+                            case "description" -> description = text;
+                            case "minPlayers" -> minPlayers = Integer.parseInt(text);
+                            case "maxPlayers" -> maxPlayers = Integer.parseInt(text);
+                            case "recommendedAge" -> recommendedAge = Integer.parseInt(text);
+                            case "playingTimeMinutes" -> playingTime = Integer.parseInt(text);
+                            case "publisher" -> publisher = text;
+                            case "category" -> category = Category.valueOf(text);
+                            case "status" -> status = GameStatus.valueOf(text);
+                            case "rating" -> rating = Double.parseDouble(text);
+                        }
+                    } catch (IllegalArgumentException ex) {
+                        System.err.println("❌ Invalid value for <" + currentTag + ">: \"" + text + "\"");
+                        System.err.println("Aborting XML reading due to invalid data.");
+                    }
+
+                } else if (event == XMLStreamConstants.END_ELEMENT) {
+                    if (reader.getLocalName().equals("boardGame")) {
+                        try {
+                            if (title == null || description == null || category == null || status == null) {
+                                System.err.println("❌ Missing required data for BoardGame (id=" + id + ")");
+                                System.err.println("Aborting XML reading due to missing fields.");
+                            }
+
+                            BoardGame bg = new BoardGame(
+                                    title, description, minPlayers, maxPlayers,
+                                    recommendedAge, playingTime, publisher,
+                                    category, status, rating
+                            );
+                            games.add(bg);
+
+                        } catch (Exception e) {
+                            System.err.println("❌ Failed to create BoardGame object (id=" + id + "): " + e.getMessage());
+                            System.err.println("Aborting XML reading.");
+                        }
+                    }
+                }
+            }
+
+            reader.close();
+        } catch (FileNotFoundException e) {
+            System.err.println("❌ Input XML file not found: " + INPUT_FILE_PATH_XML);
+        } catch (XMLStreamException e) {
+            System.err.println("❌ Error while reading XML: " + e.getMessage());
+        }
+
+        return games;
     }
 }
 

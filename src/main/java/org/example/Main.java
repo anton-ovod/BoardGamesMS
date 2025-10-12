@@ -9,8 +9,7 @@ import org.example.service.StreamService;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) throws Exception {
         System.out.println("Welcome to the Board Game Library Management System!");
 
         FileService fileService = new FileService();
@@ -59,5 +58,27 @@ public class Main {
         // SAVE to file using java.nio
         fileService.saveBoardGamesNIO(sorted);
         System.out.println("\nSaved filtered & sorted games to file.");
+
+
+
+        /// XML SERVICE TESTING
+
+        List<BoardGame> gamesForXML = List.of(
+                new BoardGame("Catan", "Build", 3, 4, 10, 90, "Cosmos", Category.STRATEGY, GameStatus.AVAILABLE, 8.5),
+                new BoardGame("Carcassonne", "BuildBuildBuild", 2, 5, 8, 45, "Hans im Glück", Category.FAMILY, GameStatus.AVAILABLE, 8.2)
+        );
+
+
+        //WRITE to BoardGame XML
+        FileService.saveBoardGamesXML(gamesForXML);
+        System.out.println("✅ Data saved into XML.");
+
+
+        //READ from BoardGame XML
+        List<BoardGame> loaded = FileService.readBoardGamesXML();
+        System.out.println("✅ Data read from XML:");
+        loaded.forEach(System.out::println);
+
+
     }
 }

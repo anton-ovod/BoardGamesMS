@@ -34,7 +34,7 @@ public class BoardGame {
                      double rating
                      )
     {
-        this.id = ThreadLocalRandom.current().nextLong();
+        this.id = ThreadLocalRandom.current().nextLong(0, Long.MAX_VALUE);
         this.title = title;
         this.description = description;
         this.minPlayers = minPlayers;

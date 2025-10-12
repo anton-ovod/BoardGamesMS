@@ -5,7 +5,7 @@ id|title|description|minPlayers|maxPlayers|recommendedAge|playingTimeMinutes|pub
 2|Pandemic|Cooperative game where players work together to cure diseases.|2|4|8|60|Z-Man Games|COOPERATIVE|BORROWED|8.5
 8|Wingspan|Engine-building game featuring birds and habitats.|1|5|10|70|Stonemaier Games|EDUCATIONAL|AVAILABLE|8.4
 7|Codenames|Teams compete to find secret agents using word clues.|2|8|10|15|Czech Games Edition|PARTY|AVAILABLE|8.3
--6508039277042074297|The Crew|Cooperative trick-taking space adventure.|2|5|10|20|Kosmos|COOPERATIVE|AVAILABLE|8.3
+-6227930913885209733|The Crew|Cooperative trick-taking space adventure.|2|5|10|20|Kosmos|COOPERATIVE|AVAILABLE|8.3
 3|Ticket to Ride|Collect train cards to claim railway routes across the map.|2|5|8|45|Days of Wonder|FAMILY|RESERVED|8.1
 6|7 Wonders|Draft cards to develop a civilization and build wonders.|2|7|10|30|Repos Production|ECONOMIC|MAINTENANCE|8.0
 9|Azul|Collect tiles to decorate the royal palace of Évora.|2|4|8|30|Next Move Games|ABSTRACT|BORROWED|8.0

@@ -9,10 +9,11 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BoardGameXMLService  {
+public class BoardGameXMLService {
     private static final String INPUT_FILE_PATH = "src/main/resources/boardgames.xml";
     private static final String OUTPUT_FILE_PATH = "src/main/resources/boardgames-modified.xml";
 
+    //Writes list of games into XML file.
     public static void writeToXML(List<BoardGame> games) throws Exception {
         XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 
@@ -79,6 +80,7 @@ public class BoardGameXMLService  {
         }
     }
 
+    //Read from XML, exit if something wrong with data.
     public static List<BoardGame> readFromXML() throws Exception {
         List<BoardGame> games = new ArrayList<>();
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -86,7 +88,6 @@ public class BoardGameXMLService  {
         try (FileInputStream fis = new FileInputStream(INPUT_FILE_PATH)) {
             XMLStreamReader reader = inputFactory.createXMLStreamReader(fis);
 
-            BoardGame current = null;
             String currentTag = null;
 
             Long id = null;
@@ -106,29 +107,39 @@ public class BoardGameXMLService  {
                         minPlayers = 0; maxPlayers = 0; recommendedAge = 0; playingTime = 0;
                         category = null; status = null; rating = 0;
                     }
+
                 } else if (event == XMLStreamConstants.CHARACTERS) {
                     String text = reader.getText().trim();
                     if (text.isEmpty()) continue;
 
-                    switch (currentTag) {
-                        case "id" -> id = Long.parseLong(text);
-                        case "title" -> title = text;
-                        case "description" -> description = text;
-                        case "minPlayers" -> minPlayers = Integer.parseInt(text);
-                        case "maxPlayers" -> maxPlayers = Integer.parseInt(text);
-                        case "recommendedAge" -> recommendedAge = Integer.parseInt(text);
-                        case "playingTimeMinutes" -> playingTime = Integer.parseInt(text);
-                        case "publisher" -> publisher = text;
-                        case "category" -> category = Category.valueOf(text);
-                        case "status" -> status = GameStatus.valueOf(text);
-                        case "rating" -> rating = Double.parseDouble(text);
+                    try {
+                        switch (currentTag) {
+                            case "id" -> id = Long.parseLong(text);
+                            case "title" -> title = text;
+                            case "description" -> description = text;
+                            case "minPlayers" -> minPlayers = Integer.parseInt(text);
+                            case "maxPlayers" -> maxPlayers = Integer.parseInt(text);
+                            case "recommendedAge" -> recommendedAge = Integer.parseInt(text);
+                            case "playingTimeMinutes" -> playingTime = Integer.parseInt(text);
+                            case "publisher" -> publisher = text;
+                            case "category" -> category = Category.valueOf(text);
+                            case "status" -> status = GameStatus.valueOf(text);
+                            case "rating" -> rating = Double.parseDouble(text);
+                        }
+                    } catch (IllegalArgumentException ex) {
+                        System.err.println("❌ Invalid value for <" + currentTag + ">: \"" + text + "\"");
+                        System.err.println("Aborting XML reading due to invalid data.");
+                        System.exit(1);
                     }
+
                 } else if (event == XMLStreamConstants.END_ELEMENT) {
                     if (reader.getLocalName().equals("boardGame")) {
-                        // Valdidate required fields
                         try {
-                            if (title == null || description == null || category == null || status == null)
-                                throw new IllegalArgumentException("No required fields.");
+                            if (title == null || description == null || category == null || status == null) {
+                                System.err.println("❌ Missing required data for BoardGame (id=" + id + ")");
+                                System.err.println("Aborting XML reading due to missing fields.");
+                                System.exit(1);
+                            }
 
                             BoardGame bg = new BoardGame(
                                     title, description, minPlayers, maxPlayers,
@@ -136,14 +147,23 @@ public class BoardGameXMLService  {
                                     category, status, rating
                             );
                             games.add(bg);
+
                         } catch (Exception e) {
-                            System.err.println("Can't create object BoardGame (id=" + id + "): " + e.getMessage());
+                            System.err.println("❌ Failed to create BoardGame object (id=" + id + "): " + e.getMessage());
+                            System.err.println("Aborting XML reading.");
+                            System.exit(1);
                         }
                     }
                 }
             }
 
             reader.close();
+        } catch (FileNotFoundException e) {
+            System.err.println("❌ Input XML file not found: " + INPUT_FILE_PATH);
+            System.exit(1);
+        } catch (XMLStreamException e) {
+            System.err.println("❌ Error while reading XML: " + e.getMessage());
+            System.exit(1);
         }
 
         return games;

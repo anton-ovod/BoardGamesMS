@@ -69,14 +69,16 @@ public class Main {
                 new BoardGame("Carcassonne", "BuildBuildBuild", 2, 5, 8, 45, "Hans im Glück", Category.FAMILY, GameStatus.AVAILABLE, 8.2)
         );
 
-        //READ from BoardGame XML
-        List<BoardGame> loaded = BoardGameXMLService.readFromXML();
-        System.out.println("✅ Data read from XML:");
-        loaded.forEach(System.out::println);
 
         //WRITE to BoardGame XML
         BoardGameXMLService.writeToXML(gamesForXML);
         System.out.println("✅ Data saved into XML.");
+
+
+        //READ from BoardGame XML
+        List<BoardGame> loaded = BoardGameXMLService.readFromXML();
+        System.out.println("✅ Data read from XML:");
+        loaded.forEach(System.out::println);
 
 
     }

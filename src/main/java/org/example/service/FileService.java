@@ -183,6 +183,9 @@ public class FileService
             writer.writeEndDocument();
             writer.flush();
             writer.close();
+        } catch (FileNotFoundException e) {
+            System.err.println("❌ Cannot create or write to file: " + OUTPUT_FILE_PATH_XML);
+            System.err.println(e.getMessage());
         }
     }
 
@@ -266,10 +269,8 @@ public class FileService
             reader.close();
         } catch (FileNotFoundException e) {
             System.err.println("❌ Input XML file not found: " + INPUT_FILE_PATH_XML);
-            System.exit(1);
         } catch (XMLStreamException e) {
             System.err.println("❌ Error while reading XML: " + e.getMessage());
-            System.exit(1);
         }
 
         return games;

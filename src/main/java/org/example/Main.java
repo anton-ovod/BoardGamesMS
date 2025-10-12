@@ -3,14 +3,14 @@ package org.example;
 import org.example.enums.Category;
 import org.example.enums.GameStatus;
 import org.example.models.BoardGame;
+import org.example.service.BoardGameXMLService;
 import org.example.service.FileService;
 import org.example.service.StreamService;
 
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) throws Exception {
         System.out.println("Welcome to the Board Game Library Management System!");
 
         FileService fileService = new FileService();
@@ -59,5 +59,26 @@ public class Main {
         // SAVE to file using java.nio
         fileService.saveBoardGamesNIO(sorted);
         System.out.println("\nSaved filtered & sorted games to file.");
+
+
+
+        /// XML SERVICE TESTING
+
+        List<BoardGame> gamesForXML = List.of(
+                new BoardGame("Catan", "Handel i budowanie", 3, 4, 10, 90, "Kosmos", Category.STRATEGY, GameStatus.AVAILABLE, 8.5),
+                new BoardGame("Carcassonne", "Buduj miasto i zdobywaj punkty", 2, 5, 8, 45, "Hans im Glück", Category.FAMILY, GameStatus.AVAILABLE, 8.2)
+        );
+
+        String path = "src/main/resources/boardgames.xml";
+
+
+        BoardGameXMLService.writeToXML(gamesForXML, path);
+        System.out.println("Zapisano do pliku XML.");
+
+
+        List<BoardGame> loaded = BoardGameXMLService.readFromXML(path);
+        System.out.println("Odczytano gry z XML:");
+        loaded.forEach(System.out::println);
+
     }
 }

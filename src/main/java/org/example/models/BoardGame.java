@@ -95,6 +95,18 @@ public class BoardGame {
         return title;
     }
 
+    public String getDescription() { return description; }
+
+    public int getMinPlayers() { return minPlayers; }
+
+    public int getMaxPlayers() { return maxPlayers; }
+
+    public int getRecommendedAge() { return recommendedAge; }
+
+    public int getPlayingTimeMinutes() { return playingTimeMinutes; }
+
+    public GameStatus getStatus() { return status; }
+
     public String toFileString() {
         return String.format(Locale.US, "%d|%s|%s|%d|%d|%d|%d|%s|%s|%s|%.1f",
                 this.id,

@@ -119,7 +119,12 @@ public class FileService
         }
     }
 
-    //Writes list of games into XML file.
+    private static void writeElem(XMLStreamWriter writer, String name, String value) throws XMLStreamException {
+        writer.writeStartElement(name);
+        writer.writeCharacters(value);
+        writer.writeEndElement();
+    }
+
     public static void saveBoardGamesXML(List<BoardGame> games) throws Exception {
         XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 
@@ -132,49 +137,17 @@ public class FileService
             for (BoardGame game : games) {
                 writer.writeStartElement("boardGame");
 
-                writer.writeStartElement("id");
-                writer.writeCharacters(String.valueOf(game.getId()));
-                writer.writeEndElement();
-
-                writer.writeStartElement("title");
-                writer.writeCharacters(game.getTitle());
-                writer.writeEndElement();
-
-                writer.writeStartElement("description");
-                writer.writeCharacters(game.getDescription());
-                writer.writeEndElement();
-
-                writer.writeStartElement("minPlayers");
-                writer.writeCharacters(String.valueOf(game.getMinPlayers()));
-                writer.writeEndElement();
-
-                writer.writeStartElement("maxPlayers");
-                writer.writeCharacters(String.valueOf(game.getMaxPlayers()));
-                writer.writeEndElement();
-
-                writer.writeStartElement("recommendedAge");
-                writer.writeCharacters(String.valueOf(game.getRecommendedAge()));
-                writer.writeEndElement();
-
-                writer.writeStartElement("playingTimeMinutes");
-                writer.writeCharacters(String.valueOf(game.getPlayingTimeMinutes()));
-                writer.writeEndElement();
-
-                writer.writeStartElement("publisher");
-                writer.writeCharacters(game.getPublisher());
-                writer.writeEndElement();
-
-                writer.writeStartElement("category");
-                writer.writeCharacters(game.getCategory().name());
-                writer.writeEndElement();
-
-                writer.writeStartElement("status");
-                writer.writeCharacters(game.getStatus().name());
-                writer.writeEndElement();
-
-                writer.writeStartElement("rating");
-                writer.writeCharacters(String.valueOf(game.getRating()));
-                writer.writeEndElement();
+                writeElem(writer, "id", String.valueOf(game.getId()));
+                writeElem(writer, "title", game.getTitle());
+                writeElem(writer, "description", game.getDescription());
+                writeElem(writer, "minPlayers", String.valueOf(game.getMinPlayers()));
+                writeElem(writer, "maxPlayers", String.valueOf(game.getMaxPlayers()));
+                writeElem(writer, "recommendedAge", String.valueOf(game.getRecommendedAge()));
+                writeElem(writer, "playingTimeMinutes", String.valueOf(game.getPlayingTimeMinutes()));
+                writeElem(writer, "publisher", game.getPublisher());
+                writeElem(writer, "category", game.getCategory().name());
+                writeElem(writer, "status", game.getStatus().name());
+                writeElem(writer, "rating", String.valueOf(game.getRating()));
 
                 writer.writeEndElement(); // </boardGame>
             }
@@ -188,6 +161,7 @@ public class FileService
             System.err.println(e.getMessage());
         }
     }
+
 
     //Read from XML, exit if something wrong with data.
     public static List<BoardGame> readBoardGamesXML() throws Exception {
@@ -238,7 +212,6 @@ public class FileService
                     } catch (IllegalArgumentException ex) {
                         System.err.println("❌ Invalid value for <" + currentTag + ">: \"" + text + "\"");
                         System.err.println("Aborting XML reading due to invalid data.");
-                        System.exit(1);
                     }
 
                 } else if (event == XMLStreamConstants.END_ELEMENT) {
@@ -247,7 +220,6 @@ public class FileService
                             if (title == null || description == null || category == null || status == null) {
                                 System.err.println("❌ Missing required data for BoardGame (id=" + id + ")");
                                 System.err.println("Aborting XML reading due to missing fields.");
-                                System.exit(1);
                             }
 
                             BoardGame bg = new BoardGame(
@@ -260,7 +232,6 @@ public class FileService
                         } catch (Exception e) {
                             System.err.println("❌ Failed to create BoardGame object (id=" + id + "): " + e.getMessage());
                             System.err.println("Aborting XML reading.");
-                            System.exit(1);
                         }
                     }
                 }

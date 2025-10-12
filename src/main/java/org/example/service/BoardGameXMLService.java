@@ -10,11 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BoardGameXMLService  {
+    private static final String INPUT_FILE_PATH = "src/main/resources/boardgames.xml";
+    private static final String OUTPUT_FILE_PATH = "src/main/resources/boardgames-modified.xml";
 
-    public static void writeToXML(List<BoardGame> games, String filePath) throws Exception {
+    public static void writeToXML(List<BoardGame> games) throws Exception {
         XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 
-        try (FileOutputStream fos = new FileOutputStream(filePath)) {
+        try (FileOutputStream fos = new FileOutputStream(OUTPUT_FILE_PATH)) {
             XMLStreamWriter writer = outputFactory.createXMLStreamWriter(fos, "UTF-8");
 
             writer.writeStartDocument("UTF-8", "1.0");
@@ -77,11 +79,11 @@ public class BoardGameXMLService  {
         }
     }
 
-    public static List<BoardGame> readFromXML(String filePath) throws Exception {
+    public static List<BoardGame> readFromXML() throws Exception {
         List<BoardGame> games = new ArrayList<>();
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 
-        try (FileInputStream fis = new FileInputStream(filePath)) {
+        try (FileInputStream fis = new FileInputStream(INPUT_FILE_PATH)) {
             XMLStreamReader reader = inputFactory.createXMLStreamReader(fis);
 
             BoardGame current = null;

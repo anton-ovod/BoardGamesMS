@@ -65,17 +65,17 @@ public class Main {
         /// XML SERVICE TESTING
 
         List<BoardGame> gamesForXML = List.of(
-                new BoardGame("Catan", "Handel i budowanie", 3, 4, 10, 90, "Kosmos", Category.STRATEGY, GameStatus.AVAILABLE, 8.5),
-                new BoardGame("Carcassonne", "Buduj miasto i zdobywaj punkty", 2, 5, 8, 45, "Hans im Glück", Category.FAMILY, GameStatus.AVAILABLE, 8.2)
+                new BoardGame("Catan", "Build", 3, 4, 10, 90, "Cosmos", Category.STRATEGY, GameStatus.AVAILABLE, 8.5),
+                new BoardGame("Carcassonne", "BuildBuildBuild", 2, 5, 8, 45, "Hans im Glück", Category.FAMILY, GameStatus.AVAILABLE, 8.2)
         );
 
         String path = "src/main/resources/boardgames.xml";
 
-
+        //WRITE to BoardGame XML
         BoardGameXMLService.writeToXML(gamesForXML, path);
         System.out.println("Zapisano do pliku XML.");
 
-
+        //READ from BoardGame XML
         List<BoardGame> loaded = BoardGameXMLService.readFromXML(path);
         System.out.println("Odczytano gry z XML:");
         loaded.forEach(System.out::println);

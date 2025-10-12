@@ -123,10 +123,10 @@ public class BoardGameXMLService  {
                     }
                 } else if (event == XMLStreamConstants.END_ELEMENT) {
                     if (reader.getLocalName().equals("boardGame")) {
-                        // Walidacja — jeśli dane niepoprawne, informacja zamiast wyjątku z parsowania
+                        // Valdidate required fields
                         try {
                             if (title == null || description == null || category == null || status == null)
-                                throw new IllegalArgumentException("Brak wymaganych pól w danych gry.");
+                                throw new IllegalArgumentException("No required fields.");
 
                             BoardGame bg = new BoardGame(
                                     title, description, minPlayers, maxPlayers,
@@ -135,7 +135,7 @@ public class BoardGameXMLService  {
                             );
                             games.add(bg);
                         } catch (Exception e) {
-                            System.err.println("Nie można utworzyć obiektu BoardGame (id=" + id + "): " + e.getMessage());
+                            System.err.println("Can't create object BoardGame (id=" + id + "): " + e.getMessage());
                         }
                     }
                 }

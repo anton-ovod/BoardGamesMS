@@ -1,5 +1,9 @@
 package org.example.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.example.enums.Category;
 import org.example.enums.GameStatus;
 
@@ -7,45 +11,31 @@ import org.example.enums.GameStatus;
 import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Data
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class BoardGame {
     private Long id;
+    @NonNull
     private String title;
+    @NonNull
     private String description;
+    @NonNull
     private int minPlayers;
+    @NonNull
     private int maxPlayers;
+    @NonNull
     private int recommendedAge;
+    @NonNull
     private int playingTimeMinutes;
+    @NonNull
     private String publisher;
+    @NonNull
     private Category category;
+    @NonNull
     private GameStatus status;
+    @NonNull
     private double rating;
-
-    public BoardGame() {}
-
-    public BoardGame(String title,
-                     String description,
-                     int minPlayers,
-                     int maxPlayers,
-                     int recommendedAge,
-                     int playingTimeMinutes,
-                     String publisher,
-                     Category category,
-                     GameStatus gameStatus,
-                     double rating
-                     )
-    {
-        this.id = ThreadLocalRandom.current().nextLong(0, Long.MAX_VALUE);
-        this.title = title;
-        this.description = description;
-        this.minPlayers = minPlayers;
-        this.maxPlayers = maxPlayers;
-        this.recommendedAge = recommendedAge;
-        this.playingTimeMinutes = playingTimeMinutes;
-        this.publisher = publisher;
-        this.category = category;
-        this.status = gameStatus;
-        this.rating = rating;
-    }
 
     /**
      * Constructor that parses fields from a String[] (from a line of a text file)
@@ -70,43 +60,6 @@ public class BoardGame {
         this.rating = Double.parseDouble(parts[10]);
     }
 
-    public Long getId()
-    {
-        return id;
-    }
-
-    public Double getRating()
-    {
-        return rating;
-    }
-
-    public String getPublisher()
-    {
-        return publisher;
-    }
-
-    public Category getCategory()
-    {
-        return category;
-    }
-
-    public String getTitle()
-    {
-        return title;
-    }
-
-    public String getDescription() { return description; }
-
-    public int getMinPlayers() { return minPlayers; }
-
-    public int getMaxPlayers() { return maxPlayers; }
-
-    public int getRecommendedAge() { return recommendedAge; }
-
-    public int getPlayingTimeMinutes() { return playingTimeMinutes; }
-
-    public GameStatus getStatus() { return status; }
-
     public String toFileString() {
         return String.format(Locale.US, "%d|%s|%s|%d|%d|%d|%d|%s|%s|%s|%.1f",
                 this.id,
@@ -120,21 +73,5 @@ public class BoardGame {
                 this.category,
                 this.status,
                 this.rating);
-    }
-
-    @Override
-    public String toString() {
-        return "BoardGame{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", minPlayers=" + minPlayers +
-                ", maxPlayers=" + maxPlayers +
-                ", recommendedAge=" + recommendedAge +
-                ", playingTimeMinutes=" + playingTimeMinutes +
-                ", publisher='" + publisher + '\'' +
-                ", category=" + category +
-                ", status=" + status +
-                ", rating=" + rating +
-                '}';
     }
 }

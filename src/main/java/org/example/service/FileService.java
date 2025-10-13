@@ -21,7 +21,7 @@ public class FileService
     private static final String OUTPUT_FILE_PATH_XML = "src/main/resources/boardgames-modified.xml";
     private static final String HEADER = "id|title|description|minPlayers|maxPlayers|recommendedAge|playingTimeMinutes|publisher|category|status|rating";
 
-    public List<BoardGame> readBoardGamesIO() {
+    public static List<BoardGame> readBoardGamesIO() {
         List<BoardGame> games = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(INPUT_FILE_PATH))) {
@@ -53,7 +53,7 @@ public class FileService
         return games;
     }
 
-    public void saveBoardGamesIO(List<BoardGame> games) {
+    public static void saveBoardGamesIO(List<BoardGame> games) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(OUTPUT_FILE_PATH)))) {
                 writer.write(HEADER);
                 writer.newLine();
@@ -70,7 +70,7 @@ public class FileService
         }
     }
 
-    public List<BoardGame> readBoardGamesNIO() {
+    public static List<BoardGame> readBoardGamesNIO() {
         List<BoardGame> games = new ArrayList<>();
 
         try{
@@ -98,7 +98,7 @@ public class FileService
         return games;
     }
 
-    public void saveBoardGamesNIO(List<BoardGame> games) {
+    public static void saveBoardGamesNIO(List<BoardGame> games) {
         List<String> lines = new ArrayList<>();
         lines.add(HEADER);
         for (BoardGame g : games) {

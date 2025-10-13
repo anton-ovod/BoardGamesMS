@@ -8,6 +8,7 @@ import org.example.service.StreamService;
 
 import java.util.*;
 
+@SpringBootApplication
 public class Main {
     public static void main(String[] args)
     {

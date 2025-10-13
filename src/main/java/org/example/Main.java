@@ -3,61 +3,55 @@ package org.example;
 import org.example.enums.Category;
 import org.example.enums.GameStatus;
 import org.example.models.BoardGame;
-import org.example.service.FileService;
-import org.example.service.StreamService;
+import org.example.modules.boardgames.BoardGameService;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 
-import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
+@SpringBootApplication
 public class Main {
-    public static void main(String[] args)
-    {
-        System.out.println("Welcome to the Board Game Library Management System!");
 
-        FileService fileService = new FileService();
-        StreamService streamService = new StreamService();
+    public static void main(String[] args) {
+        ApplicationContext context = SpringApplication.run(Main.class, args);
 
-        // READ using java.io
-        List<BoardGame> games = fileService.readBoardGamesIO();
-        System.out.println("Read " + games.size() + " games from file.");
+        BoardGameService service = context.getBean(BoardGameService.class);
 
-        // ADD new games
-        BoardGame newGame = new BoardGame(
-                "The Crew",
-                "Cooperative trick-taking space adventure.",
-                2,
-                5,
-                10,
-                20,
-                "Kosmos",
-                Category.COOPERATIVE,
-                GameStatus.AVAILABLE,
-                8.3
-        );
-        games.add(newGame);
-        System.out.println("Added new game: " + newGame.getTitle());
+        // --- CREATE ---
+        BoardGame game = new BoardGame();
+        game.setId(ThreadLocalRandom.current().nextLong(1, Long.MAX_VALUE));
+        game.setTitle("Catan");
+        game.setDescription("Trade and build");
+        game.setMinPlayers(3);
+        game.setMaxPlayers(4);
+        game.setRecommendedAge(10);
+        game.setPlayingTimeMinutes(90);
+        game.setPublisher("Kosmos");
+        game.setCategory(Category.CARD_GAME);
+        game.setStatus(GameStatus.AVAILABLE);
+        game.setRating(4.5);
 
-        // FILTER get games with rating >= 8.0
-        List<BoardGame> filtered = streamService.filterByRating(games, 8.0);
-        System.out.println("\nFiltered games (rating >= 8.0):");
-        filtered.forEach(g -> System.out.println(" - " + g.getTitle() + " (" + g.getRating() + ")"));
+        service.create(game);
+        System.out.println("Created game: " + game.getTitle());
 
-        // SORT games by rating descending
-        List<BoardGame> sorted = streamService.sortByRatingDescending(filtered);
-        System.out.println("\nSorted by rating (descending):");
-        sorted.forEach(g -> System.out.println(" - " + g.getTitle() + " (" + g.getRating() + ")"));
+        // --- READ ---
+        service.getAll().forEach(g -> System.out.println("Found game: " + g.getTitle()));
 
-        // MAP get titles only
-        List<String> titles = streamService.mapToTitles(sorted);
-        System.out.println("\nTitles of sorted games:");
-        titles.forEach(System.out::println);
+        // --- UPDATE ---
+        game.setRating(4.7);
+        service.update(game);
+        System.out.println("Updated game rating to: " + game.getRating());
 
-        // COUNT games per category
-        Map<Category, Long> counts = streamService.countCategoryOccurrences(games);
-        System.out.println("\nCategory counts:");
-        counts.forEach((cat, count) -> System.out.println(cat + ": " + count));
+        // --- READ SINGLE ---
+        BoardGame readGame = service.get(game.getId());
+        System.out.println("Read single game: " + readGame.getTitle() + ", rating: " + readGame.getRating());
 
-        // SAVE to file using java.nio
-        fileService.saveBoardGamesNIO(sorted);
-        System.out.println("\nSaved filtered & sorted games to file.");
+        // --- DELETE ---
+        service.delete(game.getId());
+        System.out.println("Deleted game: " + game.getTitle());
+
+        // --- VERIFY DELETE ---
+        service.getAll().forEach(g -> System.out.println("Remaining game: " + g.getTitle()));
     }
 }

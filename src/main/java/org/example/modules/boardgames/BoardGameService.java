@@ -14,7 +14,8 @@ public class BoardGameService {
 
     public List<BoardGame> getAll() { return repo.findAll(); }
     public BoardGame get(Long id) { return repo.findById(id); }
-    public void create(BoardGame bg) { repo.save(bg); }
+    public void create(BoardGame bg) { repo.create(bg); }
+    public void update(BoardGame bg) { repo.update(bg); }
     public void updateRating(Long id, double rating) { repo.updateRating(id, rating); }
     public void delete(Long id) { repo.delete(id); }
 }

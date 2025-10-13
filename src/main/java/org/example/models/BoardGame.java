@@ -95,6 +95,74 @@ public class BoardGame {
         return title;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getMinPlayers() {
+        return minPlayers;
+    }
+
+    public void setMinPlayers(int minPlayers) {
+        this.minPlayers = minPlayers;
+    }
+
+    public int getMaxPlayers() {
+        return maxPlayers;
+    }
+
+    public void setMaxPlayers(int maxPlayers) {
+        this.maxPlayers = maxPlayers;
+    }
+
+    public int getRecommendedAge() {
+        return recommendedAge;
+    }
+
+    public void setRecommendedAge(int recommendedAge) {
+        this.recommendedAge = recommendedAge;
+    }
+
+    public int getPlayingTimeMinutes() {
+        return playingTimeMinutes;
+    }
+
+    public void setPlayingTimeMinutes(int playingTimeMinutes) {
+        this.playingTimeMinutes = playingTimeMinutes;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public GameStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(GameStatus status) {
+        this.status = status;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
     public String toFileString() {
         return String.format(Locale.US, "%d|%s|%s|%d|%d|%d|%d|%s|%s|%s|%.1f",
                 this.id,

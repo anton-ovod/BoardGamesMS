@@ -3,6 +3,9 @@ package org.example;
 import org.example.builders.BoardGameReport;
 import org.example.builders.BorrowingReceipt;
 import org.example.builders.UserReport;
+import org.example.dtos.BoardGameBackupDto;
+import org.example.dtos.BorrowingBackupDto;
+import org.example.dtos.UserBackupDto;
 import org.example.enums.BorrowingStatus;
 import org.example.enums.Category;
 import org.example.enums.GameStatus;
@@ -68,7 +71,7 @@ public class Main {
 
 
 
-        /// XML SERVICE TESTING
+        // XML SERVICE TESTING
 
         List<BoardGame> gamesForXML = List.of(
                 new BoardGame("Catan", "Build", 3, 4, 10, 90, "Cosmos", Category.STRATEGY, GameStatus.AVAILABLE, 8.5),
@@ -118,5 +121,33 @@ public class Main {
         System.out.println(gameReport.getSummary());
         System.out.println("\n--- User Report ---");
         System.out.println(userReport.getSummary());
+
+        // Backup Dtos examples
+        System.out.println("\n--- BoardGame Backup DTO ---");
+        var boardGameBackup = new BoardGameBackupDto(game);
+
+        game.setTitle("Catan - Edycja Specjalna");
+        System.out.println("After modification: " + game);
+
+        game = boardGameBackup.toEntity();
+        System.out.println("After restoring from backup: " + game);
+
+        System.out.println("\n--- Borrowing Backup DTO ---");
+        var borrowingBackup = new BorrowingBackupDto(borrowing);
+
+        borrowing.setStatus(BorrowingStatus.RETURNED);
+        System.out.println("After modification: " + borrowing);
+
+        borrowing = borrowingBackup.toEntity();
+        System.out.println("After restoring from backup: " + borrowing);
+
+        System.out.println("\n--- User Backup DTO ---");
+        var userBackup = new UserBackupDto(user);
+
+        user.setEmail("aftermodification@gmail.com");
+        System.out.println("After modification: " + user);
+
+        user = userBackup.toEntity();
+        System.out.println("After restoring from backup: " + user.toString());
     }
 }

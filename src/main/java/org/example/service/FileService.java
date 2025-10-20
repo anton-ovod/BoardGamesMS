@@ -125,7 +125,7 @@ public class FileService
         writer.writeEndElement();
     }
 
-    public static void saveBoardGamesXML(List<BoardGame> games) throws Exception {
+    public static void saveBoardGamesXML(List<BoardGame> games) {
         XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 
         try (FileOutputStream fos = new FileOutputStream(OUTPUT_FILE_PATH_XML)) {
@@ -156,7 +156,7 @@ public class FileService
             writer.writeEndDocument();
             writer.flush();
             writer.close();
-        } catch (FileNotFoundException e) {
+        } catch (IOException | XMLStreamException e) {
             System.err.println("❌ Cannot create or write to file: " + OUTPUT_FILE_PATH_XML);
             System.err.println(e.getMessage());
         }
@@ -164,7 +164,7 @@ public class FileService
 
 
     //Read from XML, exit if something wrong with data.
-    public static List<BoardGame> readBoardGamesXML() throws Exception {
+    public static List<BoardGame> readBoardGamesXML() {
         List<BoardGame> games = new ArrayList<>();
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 
@@ -242,6 +242,8 @@ public class FileService
             System.err.println("❌ Input XML file not found: " + INPUT_FILE_PATH_XML);
         } catch (XMLStreamException e) {
             System.err.println("❌ Error while reading XML: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("❌ Error while r/w XML: " + e.getMessage());
         }
 
         return games;

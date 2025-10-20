@@ -19,4 +19,10 @@ public class User {
     private String email;
     @NonNull
     private UserRole role;
+    @NonNull
+    private Boolean active;
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 }

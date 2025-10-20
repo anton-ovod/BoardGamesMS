@@ -42,11 +42,11 @@ public class UserRepository {
         return jdbc.update("UPDATE users SET email = ? WHERE id = ?", newEmail, id);
     }
 
-    public int deactivate(Long id) { // miękkie usunięcie
+    public int deactivate(Long id) {
         return jdbc.update("UPDATE users SET active = FALSE WHERE id = ?", id);
     }
 
-    public int delete(Long id) { // trwałe usunięcie
+    public int delete(Long id) {
         return jdbc.update("DELETE FROM users WHERE id = ?", id);
     }
 }

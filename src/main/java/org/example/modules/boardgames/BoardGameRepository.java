@@ -18,7 +18,6 @@ public class BoardGameRepository {
         this.jdbc = jdbc;
     }
 
-    // --- MAPPER ---
     private final RowMapper<BoardGame> mapper = (rs, rowNum) -> {
         BoardGame game = new BoardGame(
                 rs.getString("title"),
@@ -32,12 +31,10 @@ public class BoardGameRepository {
                 GameStatus.valueOf(rs.getString("status")),
                 rs.getDouble("rating")
         );
-        // Set the ID from the DB
         game.setId(rs.getLong("id"));
         return game;
     };
 
-    // --- READ ---
     public List<BoardGame> findAll() {
         return jdbc.query("SELECT * FROM board_games", mapper);
     }
@@ -46,11 +43,10 @@ public class BoardGameRepository {
         try {
             return jdbc.queryForObject("SELECT * FROM board_games WHERE id = ?", mapper, id);
         } catch (Exception e) {
-            return null; // Return null if not found
+            return null;
         }
     }
 
-    // --- CREATE ---
     public int create(BoardGame game) {
         return jdbc.update("""
                 INSERT INTO board_games(id, title, description, min_players, max_players, 
@@ -71,7 +67,6 @@ public class BoardGameRepository {
         );
     }
 
-    // --- UPDATE ---
     public int update(BoardGame game) {
         return jdbc.update("""
                 UPDATE board_games
@@ -94,12 +89,10 @@ public class BoardGameRepository {
         );
     }
 
-    // --- UPDATE RATING ONLY ---
     public int updateRating(Long id, double rating) {
         return jdbc.update("UPDATE board_games SET rating = ? WHERE id = ?", rating, id);
     }
 
-    // --- DELETE ---
     public int delete(Long id) {
         return jdbc.update("DELETE FROM board_games WHERE id = ?", id);
     }

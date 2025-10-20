@@ -1,22 +1,32 @@
 package org.example;
 
+import org.example.builders.BoardGameReport;
+import org.example.builders.BorrowingReceipt;
+import org.example.builders.UserReport;
+import org.example.dtos.BoardGameBackupDto;
+import org.example.dtos.BorrowingBackupDto;
+import org.example.dtos.UserBackupDto;
+import org.example.enums.BorrowingStatus;
 import org.example.enums.Category;
 import org.example.enums.GameStatus;
+import org.example.enums.UserRole;
 import org.example.models.BoardGame;
+import org.example.models.Borrowing;
+import org.example.models.User;
 import org.example.service.FileService;
 import org.example.service.StreamService;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         System.out.println("Welcome to the Board Game Library Management System!");
 
-        FileService fileService = new FileService();
         StreamService streamService = new StreamService();
 
         // READ using java.io
-        List<BoardGame> games = fileService.readBoardGamesIO();
+        List<BoardGame> games = FileService.readBoardGamesIO();
         System.out.println("Read " + games.size() + " games from file.");
 
         // ADD new games
@@ -56,12 +66,12 @@ public class Main {
         counts.forEach((cat, count) -> System.out.println(cat + ": " + count));
 
         // SAVE to file using java.nio
-        fileService.saveBoardGamesNIO(sorted);
+        FileService.saveBoardGamesNIO(sorted);
         System.out.println("\nSaved filtered & sorted games to file.");
 
 
 
-        /// XML SERVICE TESTING
+        // XML SERVICE TESTING
 
         List<BoardGame> gamesForXML = List.of(
                 new BoardGame("Catan", "Build", 3, 4, 10, 90, "Cosmos", Category.STRATEGY, GameStatus.AVAILABLE, 8.5),
@@ -79,6 +89,65 @@ public class Main {
         System.out.println("✅ Data read from XML:");
         loaded.forEach(System.out::println);
 
+        // Example usage of builders classes
 
+        User user = new User(1L, "Jan", "Kowalski", "jan.kowalski@example.com", UserRole.MEMBER);
+        BoardGame game = new BoardGame(10L, "Catan", "Handel i rozwój osad", 3, 4, 10, 90, "Kosmos",
+                Category.STRATEGY, GameStatus.AVAILABLE, 8.6);
+        Borrowing borrowing = new Borrowing(100L, 1L, 10L,
+                LocalDateTime.now().minusDays(2),
+                LocalDateTime.now().plusDays(5),
+                null, BorrowingStatus.ACTIVE, "Brak uwag");
+
+        BorrowingReceipt receipt = BorrowingReceipt.builder()
+                .user(user)
+                .game(game)
+                .borrowing(borrowing)
+                .build();
+
+        BoardGameReport gameReport = BoardGameReport.builder()
+                .game(game)
+                .borrowings(List.of(borrowing))
+                .build();
+
+        UserReport userReport = UserReport.builder()
+                .user(user)
+                .borrowings(List.of(borrowing))
+                .build();
+
+        System.out.println("\n--- Borrowing Receipt ---");
+        System.out.println(receipt.getSummary());
+        System.out.println("\n--- Board Game Report ---");
+        System.out.println(gameReport.getSummary());
+        System.out.println("\n--- User Report ---");
+        System.out.println(userReport.getSummary());
+
+        // Backup Dtos examples
+        System.out.println("\n--- BoardGame Backup DTO ---");
+        var boardGameBackup = new BoardGameBackupDto(game);
+
+        game.setTitle("Catan - Edycja Specjalna");
+        System.out.println("After modification: " + game);
+
+        game = boardGameBackup.toEntity();
+        System.out.println("After restoring from backup: " + game);
+
+        System.out.println("\n--- Borrowing Backup DTO ---");
+        var borrowingBackup = new BorrowingBackupDto(borrowing);
+
+        borrowing.setStatus(BorrowingStatus.RETURNED);
+        System.out.println("After modification: " + borrowing);
+
+        borrowing = borrowingBackup.toEntity();
+        System.out.println("After restoring from backup: " + borrowing);
+
+        System.out.println("\n--- User Backup DTO ---");
+        var userBackup = new UserBackupDto(user);
+
+        user.setEmail("aftermodification@gmail.com");
+        System.out.println("After modification: " + user);
+
+        user = userBackup.toEntity();
+        System.out.println("After restoring from backup: " + user.toString());
     }
 }

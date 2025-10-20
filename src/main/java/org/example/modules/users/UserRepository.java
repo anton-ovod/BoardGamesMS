@@ -1,5 +1,6 @@
 package org.example.modules.users;
 
+import org.example.enums.UserRole;
 import org.example.models.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,37 +17,52 @@ public class UserRepository {
     }
 
     private final RowMapper<User> mapper = (rs, rowNum) -> new User(
+            rs.getLong("id"),
             rs.getString("first_name"),
             rs.getString("last_name"),
             rs.getString("email"),
-            org.example.enums.UserRole.valueOf(rs.getString("role"))
+            UserRole.valueOf(rs.getString("role")),
+            rs.getBoolean("active")
     );
 
-    public List<User> findAll() {
-        return jdbc.query("SELECT * FROM users WHERE active = TRUE", mapper);
+    public User create(User user) {
+        Long id = jdbc.queryForObject(
+                "INSERT INTO users(first_name, last_name, email, role, active) VALUES (?, ?, ?, ?, ?) RETURNING id",
+                Long.class,
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getRole().name(),
+                user.getActive()
+        );
+        return new User(id, user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole(), user.getActive());
     }
 
-    public User findById(Long id) {
-        return jdbc.queryForObject("SELECT * FROM users WHERE id = ?", mapper, id);
+    public User read(Long id) {
+        List<User> users = jdbc.query("SELECT * FROM users WHERE id = ?", mapper, id);
+        return users.isEmpty() ? null : users.get(0);
     }
 
-    public int save(User user) {
-        return jdbc.update("INSERT INTO users(first_name, last_name, email, role) VALUES (?, ?, ?, ?)",
-                user.getFullName().split(" ")[0],
-                user.getFullName().split(" ")[1],
-                user.toString(),
-                user.toString());
-    }
+    public User update(User user) {
+        int rows = jdbc.update(
+                "UPDATE users SET first_name = ?, last_name = ?, email = ?, role = ?, active = ? WHERE id = ?",
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getRole().name(),
+                user.getActive(),
+                user.getId()
+        );
 
-    public int updateEmail(Long id, String newEmail) {
-        return jdbc.update("UPDATE users SET email = ? WHERE id = ?", newEmail, id);
-    }
-
-    public int deactivate(Long id) {
-        return jdbc.update("UPDATE users SET active = FALSE WHERE id = ?", id);
+        if (rows == 0) return null;
+        return read(user.getId());
     }
 
     public int delete(Long id) {
         return jdbc.update("DELETE FROM users WHERE id = ?", id);
+    }
+
+    public List<User> readAll() {
+        return jdbc.query("SELECT * FROM users", mapper);
     }
 }

@@ -1,8 +1,8 @@
 package org.example.modules.boardgames;
 
-import org.example.models.BoardGame;
 import org.example.enums.Category;
 import org.example.enums.GameStatus;
+import org.example.models.BoardGame;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -20,6 +20,7 @@ public class BoardGameRepository {
 
     private final RowMapper<BoardGame> mapper = (rs, rowNum) -> {
         BoardGame game = new BoardGame(
+                rs.getLong("id"),
                 rs.getString("title"),
                 rs.getString("description"),
                 rs.getInt("min_players"),
@@ -31,29 +32,18 @@ public class BoardGameRepository {
                 GameStatus.valueOf(rs.getString("status")),
                 rs.getDouble("rating")
         );
-        game.setId(rs.getLong("id"));
         return game;
     };
 
-    public List<BoardGame> findAll() {
-        return jdbc.query("SELECT * FROM board_games", mapper);
-    }
-
-    public BoardGame findById(Long id) {
-        try {
-            return jdbc.queryForObject("SELECT * FROM board_games WHERE id = ?", mapper, id);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public int create(BoardGame game) {
-        return jdbc.update("""
-                INSERT INTO board_games(id, title, description, min_players, max_players, 
-                recommended_age, playing_time_minutes, publisher, category, status, rating)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    public BoardGame create(BoardGame game) {
+        Long id = jdbc.queryForObject(
+                """
+                INSERT INTO board_games(title, description, min_players, max_players,
+                                        recommended_age, playing_time_minutes, publisher, category, status, rating)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                RETURNING id
                 """,
-                game.getId(),                     // ID is now inserted
+                Long.class,
                 game.getTitle(),
                 game.getDescription(),
                 game.getMinPlayers(),
@@ -65,10 +55,34 @@ public class BoardGameRepository {
                 game.getStatus().name(),
                 game.getRating()
         );
+
+        return new BoardGame(
+                id,
+                game.getTitle(),
+                game.getDescription(),
+                game.getMinPlayers(),
+                game.getMaxPlayers(),
+                game.getRecommendedAge(),
+                game.getPlayingTimeMinutes(),
+                game.getPublisher(),
+                game.getCategory(),
+                game.getStatus(),
+                game.getRating()
+        );
     }
 
-    public int update(BoardGame game) {
-        return jdbc.update("""
+    public BoardGame read(Long id) {
+        List<BoardGame> games = jdbc.query("SELECT * FROM board_games WHERE id = ?", mapper, id);
+        return games.isEmpty() ? null : games.get(0);
+    }
+
+    public List<BoardGame> readAll() {
+        return jdbc.query("SELECT * FROM board_games", mapper);
+    }
+
+
+    public BoardGame update(BoardGame game) {
+        int rows = jdbc.update("""
                 UPDATE board_games
                 SET title = ?, description = ?, min_players = ?, max_players = ?,
                     recommended_age = ?, playing_time_minutes = ?, publisher = ?,
@@ -87,10 +101,9 @@ public class BoardGameRepository {
                 game.getRating(),
                 game.getId()
         );
-    }
 
-    public int updateRating(Long id, double rating) {
-        return jdbc.update("UPDATE board_games SET rating = ? WHERE id = ?", rating, id);
+        if (rows == 0) return null;
+        return read(game.getId());
     }
 
     public int delete(Long id) {

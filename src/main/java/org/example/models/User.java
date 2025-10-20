@@ -1,45 +1,28 @@
 package org.example.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.example.enums.UserRole;
 
-import java.util.concurrent.ThreadLocalRandom;
-
+@Data
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class User {
     private Long id;
+    @NonNull
     private String firstName;
+    @NonNull
     private String lastName;
+    @NonNull
     private String email;
+    @NonNull
     private UserRole role;
+    @NonNull
+    private Boolean active;
 
-    public User(String firstName,
-                String lastName,
-                String email,
-                UserRole role) {
-        this.id = ThreadLocalRandom.current().nextLong();
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.role = role;
-    }
-
-    public Long getId()
-    {
-        return id;
-    }
-
-    public String getFullName()
-    {
+    public String getFullName() {
         return firstName + " " + lastName;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", role=" + role +
-                '}';
     }
 }

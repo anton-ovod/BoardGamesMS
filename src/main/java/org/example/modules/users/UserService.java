@@ -2,6 +2,7 @@ package org.example.modules.users;
 
 import org.example.models.User;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -12,9 +13,23 @@ public class UserService {
         this.repo = repo;
     }
 
-    public List<User> getAll() { return repo.findAll(); }
-    public User get(Long id) { return repo.findById(id); }
-    public void create(User user) { repo.save(user); }
-    public void deactivate(Long id) { repo.deactivate(id); }
-    public void delete(Long id) { repo.delete(id); }
+    public User create(User user) {
+        return repo.create(user);
+    }
+
+    public User read(Long id) {
+        return repo.read(id);
+    }
+
+    public List<User> readAll() {
+        return repo.readAll();
+    }
+
+    public User update(User user) {
+        return repo.update(user);
+    }
+
+    public int delete(Long id) {
+        return repo.delete(id);
+    }
 }

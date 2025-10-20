@@ -1,51 +1,40 @@
 package org.example.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.example.enums.Category;
 import org.example.enums.GameStatus;
 
 
 import java.util.Locale;
-import java.util.concurrent.ThreadLocalRandom;
 
+@Data
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class BoardGame {
     private Long id;
+    @NonNull
     private String title;
+    @NonNull
     private String description;
+    @NonNull
     private int minPlayers;
+    @NonNull
     private int maxPlayers;
+    @NonNull
     private int recommendedAge;
+    @NonNull
     private int playingTimeMinutes;
+    @NonNull
     private String publisher;
+    @NonNull
     private Category category;
+    @NonNull
     private GameStatus status;
+    @NonNull
     private double rating;
-
-    public BoardGame() {}
-
-    public BoardGame(String title,
-                     String description,
-                     int minPlayers,
-                     int maxPlayers,
-                     int recommendedAge,
-                     int playingTimeMinutes,
-                     String publisher,
-                     Category category,
-                     GameStatus gameStatus,
-                     double rating
-                     )
-    {
-        this.id = ThreadLocalRandom.current().nextLong();
-        this.title = title;
-        this.description = description;
-        this.minPlayers = minPlayers;
-        this.maxPlayers = maxPlayers;
-        this.recommendedAge = recommendedAge;
-        this.playingTimeMinutes = playingTimeMinutes;
-        this.publisher = publisher;
-        this.category = category;
-        this.status = gameStatus;
-        this.rating = rating;
-    }
 
     /**
      * Constructor that parses fields from a String[] (from a line of a text file)
@@ -68,99 +57,6 @@ public class BoardGame {
         this.category = Category.valueOf(parts[8]);
         this.status = GameStatus.valueOf(parts[9]);
         this.rating = Double.parseDouble(parts[10]);
-    }
-
-    public Long getId()
-    {
-        return id;
-    }
-
-    public Double getRating()
-    {
-        return rating;
-    }
-
-    public String getPublisher()
-    {
-        return publisher;
-    }
-
-    public Category getCategory()
-    {
-        return category;
-    }
-
-    public String getTitle()
-    {
-        return title;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public int getMinPlayers() {
-        return minPlayers;
-    }
-
-    public void setMinPlayers(int minPlayers) {
-        this.minPlayers = minPlayers;
-    }
-
-    public int getMaxPlayers() {
-        return maxPlayers;
-    }
-
-    public void setMaxPlayers(int maxPlayers) {
-        this.maxPlayers = maxPlayers;
-    }
-
-    public int getRecommendedAge() {
-        return recommendedAge;
-    }
-
-    public void setRecommendedAge(int recommendedAge) {
-        this.recommendedAge = recommendedAge;
-    }
-
-    public int getPlayingTimeMinutes() {
-        return playingTimeMinutes;
-    }
-
-    public void setPlayingTimeMinutes(int playingTimeMinutes) {
-        this.playingTimeMinutes = playingTimeMinutes;
-    }
-
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public GameStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(GameStatus status) {
-        this.status = status;
-    }
-
-    public void setRating(double rating) {
-        this.rating = rating;
     }
 
     public String toFileString() {

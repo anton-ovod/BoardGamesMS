@@ -13,6 +13,7 @@ public class UserBackupDto {
     private String lastName;
     private String email;
     private UserRole role;
+    private Boolean active;
 
     public UserBackupDto(User user)
     {
@@ -21,6 +22,7 @@ public class UserBackupDto {
         this.lastName = user.getLastName();
         this.email = user.getEmail();
         this.role = user.getRole();
+        this.active = user.getActive();
     }
 
     public User toEntity()
@@ -30,7 +32,8 @@ public class UserBackupDto {
                 firstName,
                 lastName,
                 email,
-                role
+                role,
+                active
         );
     }
 }

@@ -9,7 +9,6 @@ import org.example.enums.GameStatus;
 
 
 import java.util.Locale;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Data
 @AllArgsConstructor
@@ -43,10 +42,6 @@ public class BoardGame {
      * id|title|description|minPlayers|maxPlayers|recommendedAge|playingTimeMinutes|publisher|category|status|rating
      */
     public BoardGame(String[] parts) {
-        if (parts.length < 11) {
-            throw new IllegalArgumentException("Invalid data format for BoardGame: expected 11 fields, got " + parts.length);
-        }
-
         this.id = Long.parseLong(parts[0]);
         this.title = parts[1];
         this.description = parts[2];
@@ -73,5 +68,21 @@ public class BoardGame {
                 this.category,
                 this.status,
                 this.rating);
+    }
+
+    @Override
+    public String toString() {
+        return "BoardGame{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", minPlayers=" + minPlayers +
+                ", maxPlayers=" + maxPlayers +
+                ", recommendedAge=" + recommendedAge +
+                ", playingTimeMinutes=" + playingTimeMinutes +
+                ", publisher='" + publisher + '\'' +
+                ", category=" + category +
+                ", status=" + status +
+                ", rating=" + rating +
+                '}';
     }
 }

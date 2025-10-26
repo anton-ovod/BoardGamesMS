@@ -34,6 +34,9 @@ public class FileService
                     continue;
                 }
                 String[] parts = line.split("\\|");
+                if (parts.length < 11) {
+                    throw new IllegalArgumentException("Invalid data format for BoardGame: expected 11 fields, got " + parts.length);
+                }
 
                 BoardGame g = new BoardGame(parts);
                 games.add(g);
@@ -43,6 +46,10 @@ public class FileService
         }
         catch(FileNotFoundException e) {
             System.out.println("❌ File not found: " + INPUT_FILE_PATH);
+            System.err.println(e.getMessage());
+        }
+        catch(IllegalArgumentException e) {
+            System.out.println("❌ Data format error in file: " + INPUT_FILE_PATH);
             System.err.println(e.getMessage());
         }
         catch (IOException e) {
@@ -76,9 +83,12 @@ public class FileService
         try{
             Path path = Paths.get(INPUT_FILE_PATH);
             List<String> lines = Files.readAllLines(path);
-            for(int i = 1; i < lines.size(); i++) // skip header
+            for(int i = 1; i < lines.size(); i++)
             {
                 String[] parts = lines.get(i).split("\\|");
+                if (parts.length < 11) {
+                    throw new IllegalArgumentException("Invalid data format for BoardGame: expected 11 fields, got " + parts.length);
+                }
 
                 BoardGame g = new BoardGame(parts);
                 games.add(g);
@@ -88,6 +98,10 @@ public class FileService
         }
         catch (InvalidPathException e) {
             System.out.println("❌ File not found: " + INPUT_FILE_PATH);
+            System.err.println(e.getMessage());
+        }
+        catch(IllegalArgumentException e) {
+            System.out.println("❌ Data format error in file: " + INPUT_FILE_PATH);
             System.err.println(e.getMessage());
         }
         catch (IOException e) {
@@ -125,7 +139,7 @@ public class FileService
         writer.writeEndElement();
     }
 
-    public static void saveBoardGamesXML(List<BoardGame> games) throws Exception {
+    public static void saveBoardGamesXML(List<BoardGame> games) {
         XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 
         try (FileOutputStream fos = new FileOutputStream(OUTPUT_FILE_PATH_XML)) {
@@ -156,15 +170,13 @@ public class FileService
             writer.writeEndDocument();
             writer.flush();
             writer.close();
-        } catch (FileNotFoundException e) {
+        } catch (IOException | XMLStreamException e) {
             System.err.println("❌ Cannot create or write to file: " + OUTPUT_FILE_PATH_XML);
             System.err.println(e.getMessage());
         }
     }
 
-
-    //Read from XML, exit if something wrong with data.
-    public static List<BoardGame> readBoardGamesXML() throws Exception {
+    public static List<BoardGame> readBoardGamesXML() {
         List<BoardGame> games = new ArrayList<>();
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 
@@ -217,12 +229,7 @@ public class FileService
                 } else if (event == XMLStreamConstants.END_ELEMENT) {
                     if (reader.getLocalName().equals("boardGame")) {
                         try {
-                            if (title == null || description == null || category == null || status == null) {
-                                System.err.println("❌ Missing required data for BoardGame (id=" + id + ")");
-                                System.err.println("Aborting XML reading due to missing fields.");
-                            }
-
-                            BoardGame bg = new BoardGame(
+                            BoardGame bg = new BoardGame(id,
                                     title, description, minPlayers, maxPlayers,
                                     recommendedAge, playingTime, publisher,
                                     category, status, rating
@@ -242,6 +249,8 @@ public class FileService
             System.err.println("❌ Input XML file not found: " + INPUT_FILE_PATH_XML);
         } catch (XMLStreamException e) {
             System.err.println("❌ Error while reading XML: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("❌ Error while r/w XML: " + e.getMessage());
         }
 
         return games;

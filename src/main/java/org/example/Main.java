@@ -36,12 +36,12 @@ public class Main {
         UserService userService = context.getBean(UserService.class);
 
         // READ using java.io
-        //MB try-catch needed
         List<BoardGame> games = FileService.readBoardGamesIO();
         System.out.println("Read " + games.size() + " games from file.");
 
         // ADD new games
         BoardGame newGame = new BoardGame(
+                games.size() + 1L,
                 "The Crew",
                 "Cooperative trick-taking space adventure.",
                 2,
@@ -78,28 +78,24 @@ public class Main {
 
         // SAVE to file using java.nio
         FileService.saveBoardGamesNIO(sorted);
-        System.out.println("\nSaved filtered & sorted games to file.");
-
-
 
         // XML SERVICE TESTING
 
-        List<BoardGame> gamesForXML = List.of(
-                new BoardGame("Catan", "Build", 3, 4, 10, 90, "Cosmos", Category.STRATEGY, GameStatus.AVAILABLE, 8.5),
-                new BoardGame("Carcassonne", "BuildBuildBuild", 2, 5, 8, 45, "Hans im Glück", Category.FAMILY, GameStatus.AVAILABLE, 8.2)
-        );
+        //READ from BoardGame XML
+        List<BoardGame> xmlGames = FileService.readBoardGamesXML();
+        System.out.println("\n✅ Data read from XML:");
+        xmlGames.forEach(System.out::println);
 
+        // ADD new games to list
+        List<BoardGame> newGames = List.of(
+                new BoardGame(xmlGames.size() + 1L, "Gloomhaven", "Fantasy adventure board game.", 1, 4, 14, 120, "Cephalofair Games", Category.ADVENTURE, GameStatus.AVAILABLE, 9.0),
+                new BoardGame(xmlGames.size() + 2L, "Pandemic", "Cooperative disease-fighting game", 2, 4, 8, 60, "Gamewright", Category.COOPERATIVE, GameStatus.AVAILABLE, 8.4)
+        );
+        xmlGames.addAll(newGames);
 
         //WRITE to BoardGame XML
-        // try catch
-        FileService.saveBoardGamesXML(gamesForXML);
+        FileService.saveBoardGamesXML(xmlGames);
         System.out.println("✅ Data saved into XML.");
-
-
-        //READ from BoardGame XML
-        List<BoardGame> loaded = FileService.readBoardGamesXML();
-        System.out.println("✅ Data read from XML:");
-        loaded.forEach(System.out::println);
 
         // Example usage of builders classes
 
@@ -135,6 +131,7 @@ public class Main {
         System.out.println(userReport.getSummary());
 
         // Backup Dtos examples
+
         System.out.println("\n--- BoardGame Backup DTO ---");
         var boardGameBackup = new BoardGameBackupDto(game);
 
@@ -162,62 +159,57 @@ public class Main {
         user = userBackup.toEntity();
         System.out.println("After restoring from backup: " + user.toString());
 
+        // Spring services tests
 
-
+        // Create
         game = boardGameservice.create(game);
-        System.out.println("Created game: " + game.getTitle());
+        System.out.println("\nCreated game: " + game);
 
         user = userService.create(user);
-        System.out.println("Created user: " + user.getFullName());
+        System.out.println("Created user: " + user);
 
         System.out.println("\nAll games:");
         boardGameservice.readAll().forEach(g ->
-                System.out.println("Found game: " + g.getTitle()));
+                System.out.println("Found game: " + g));
 
         System.out.println("\nAll users:");
         userService.readAll().forEach(u ->
-                System.out.println("Found user: " + u.getFullName() + ", email: " + u.getEmail()));
+                System.out.println("Found user: " + u));
 
+        // Read
         BoardGame readGame = boardGameservice.read(game.getId());
-        System.out.println("Read single game: " + readGame.getTitle() + ", rating: " + readGame.getRating());
+        System.out.println("\nRead single game: " + readGame);
 
         User readUser = userService.read(user.getId());
-        System.out.println("Read single user: " + readUser.getFullName() + ", email: " + readUser.getEmail());
+        System.out.println("\nRead single user: " + readUser);
 
+        // Update
         game.setRating(9.5);
         game = boardGameservice.update(game);
-        System.out.println("Updated game rating to: " + game.getRating());
+        System.out.println("\nUpdated game rating to: " + game.getRating());
 
-        user.setEmail("alice.new@example.com");
+        user.setEmail("updatedmail@gmail.com");
         user = userService.update(user);
-        System.out.println("Updated user email to: " + user.getEmail());
+        System.out.println("\nUpdated user email to: " + user.getEmail());
 
+        // Hard Delete
         boardGameservice.delete(game.getId());
-        System.out.println("Deleted game: " + game.getTitle());
+        System.out.println("\nDeleted game: " + game);
+
+        System.out.println("Remaining games:");
+        boardGameservice.readAll().forEach(g -> System.out.println("Remaining game: " + g));
 
         userService.delete(user.getId());
-        System.out.println("Deleted user: " + user.getFullName());
+        System.out.println("\nDeleted user: " + user);
 
-        System.out.println("\nRemaining games:");
-        boardGameservice.readAll().forEach(g -> System.out.println("Remaining game: " + g.getTitle()));
+        System.out.println("Remaining users:");
+        userService.readAll().forEach(u -> System.out.println("Remaining user: " + u));
 
-        System.out.println("\nRemaining users:");
-        userService.readAll().forEach(u -> System.out.println("Remaining user: " + u.getFullName()));
-
-
-
-
-
-
-        //SAFE/HARD delete test
-
+        // Soft delete
         User user1 = new User(null, "Alice", "Smith", "alice.smith@example.com", UserRole.MEMBER, true);
-        User user2 = new User(null, "Bob", "Johnson", "bob.johnson@example.com", UserRole.MEMBER, true);
-
         user1 = userService.create(user1);
-        user2 = userService.create(user2);
 
-        System.out.println("Created users:");
+        System.out.println("\nCurrent users:");
         userService.readAll().forEach(u -> System.out.println(u.getFullName() + " | active=" + u.getActive()));
 
         user1.setActive(false);
@@ -225,12 +217,5 @@ public class Main {
 
         System.out.println("\nAfter soft delete (inactive) of Alice:");
         userService.readAll().forEach(u -> System.out.println(u.getFullName() + " | active=" + u.getActive()));
-
-        userService.delete(user2.getId());
-
-        System.out.println("\nAfter hard delete of Bob:");
-        userService.readAll().forEach(u -> System.out.println(u.getFullName() + " | active=" + u.getActive()));
-
-
     }
 }

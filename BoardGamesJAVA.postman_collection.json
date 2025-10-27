@@ -1,0 +1,202 @@
+{
+	"info": {
+		"_postman_id": "4fa9deda-4083-49fc-a650-5e35c7c7c5b0",
+		"name": "BoardGamesJAVA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43823283"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8080/users",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"firstName\": \"John\",\r\n  \"lastName\": \"Doe\",\r\n  \"email\": \"john.doe@email.com\",\r\n  \"role\": \"ADMIN\",\r\n  \"active\": true\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/users/53",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"firstName\": \"Johnny\",\r\n  \"lastName\": \"Doe\",\r\n  \"email\": \"johnny.doe@email.com\",\r\n  \"role\": \"MEMBER\",\r\n  \"active\": false\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/53",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"53"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/users/54",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/54",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"54"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/board-games",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"Catan\",\r\n  \"description\": \"Strategy and trading board game\",\r\n  \"minPlayers\": 3,\r\n  \"maxPlayers\": 4,\r\n  \"recommendedAge\": 10,\r\n  \"playingTimeMinutes\": 90,\r\n  \"publisher\": \"Kosmos\",\r\n  \"category\": \"STRATEGY\",\r\n  \"status\": \"AVAILABLE\",\r\n  \"rating\": 8.7\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/boardgames",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boardgames"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/board-games",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/boardgames",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boardgames"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/board-games/44",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"Catan: Revised Edition\",\r\n  \"description\": \"Improved strategy trading game\",\r\n  \"minPlayers\": 2,\r\n  \"maxPlayers\": 4,\r\n  \"recommendedAge\": 12,\r\n  \"playingTimeMinutes\": 75,\r\n  \"publisher\": \"Kosmos\",\r\n  \"category\": \"STRATEGY\",\r\n  \"status\": \"RESERVED\",\r\n  \"rating\": 9.1\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/boardgames/44",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boardgames",
+						"44"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/board-games/44",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/boardgames/44",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boardgames",
+						"44"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

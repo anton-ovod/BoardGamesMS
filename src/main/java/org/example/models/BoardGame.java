@@ -1,9 +1,6 @@
 package org.example.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.example.enums.Category;
 import org.example.enums.GameStatus;
 
@@ -12,6 +9,7 @@ import java.util.Locale;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @RequiredArgsConstructor
 public class BoardGame {
     private Long id;

@@ -1,4 +1,22 @@
 package org.example.parser;
 
-public class ParseData {
+import java.util.List;
+
+public class ParsedData {
+    private final List<String> researchUnits;
+    private final List<String> employeesData;
+
+    public ParsedData(List<String> researchUnits, List<String> employeesData) {
+        this.researchUnits = researchUnits;
+        this.employeesData = employeesData;
+    }
+
+    public List<String> getResearchUnits() {
+        return researchUnits;
+    }
+
+    public List<String> getEmployeesData() {
+        return employeesData;
+    }
 }
+

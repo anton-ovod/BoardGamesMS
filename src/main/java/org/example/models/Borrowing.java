@@ -1,15 +1,13 @@
 package org.example.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.example.enums.BorrowingStatus;
 
 import java.time.LocalDateTime;
 
 @Data
 @RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 public class Borrowing {
     private Long id;

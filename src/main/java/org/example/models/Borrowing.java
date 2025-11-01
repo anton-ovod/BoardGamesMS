@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @Table(name = "borrowings")
 @Data
 @RequiredArgsConstructor
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Borrowing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

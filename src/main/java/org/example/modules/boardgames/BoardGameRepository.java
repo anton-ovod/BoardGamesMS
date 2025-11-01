@@ -38,7 +38,7 @@ public class BoardGameRepository {
     public BoardGame create(BoardGame game) {
         Long id = jdbc.queryForObject(
                 """
-                INSERT INTO board_games(title, description, min_players, max_players,
+                INSERT INTO boardgames(title, description, min_players, max_players,
                                         recommended_age, playing_time_minutes, publisher, category, status, rating)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 RETURNING id
@@ -72,18 +72,18 @@ public class BoardGameRepository {
     }
 
     public BoardGame read(Long id) {
-        List<BoardGame> games = jdbc.query("SELECT * FROM board_games WHERE id = ?", mapper, id);
+        List<BoardGame> games = jdbc.query("SELECT * FROM boardgames WHERE id = ?", mapper, id);
         return games.isEmpty() ? null : games.get(0);
     }
 
     public List<BoardGame> readAll() {
-        return jdbc.query("SELECT * FROM board_games", mapper);
+        return jdbc.query("SELECT * FROM boardgames", mapper);
     }
 
 
     public BoardGame update(BoardGame game) {
         int rows = jdbc.update("""
-                UPDATE board_games
+                UPDATE boardgames
                 SET title = ?, description = ?, min_players = ?, max_players = ?,
                     recommended_age = ?, playing_time_minutes = ?, publisher = ?,
                     category = ?, status = ?, rating = ?
@@ -107,6 +107,6 @@ public class BoardGameRepository {
     }
 
     public int delete(Long id) {
-        return jdbc.update("DELETE FROM board_games WHERE id = ?", id);
+        return jdbc.update("DELETE FROM boardgames WHERE id = ?", id);
     }
 }

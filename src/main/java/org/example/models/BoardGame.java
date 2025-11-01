@@ -1,39 +1,47 @@
 package org.example.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import org.example.enums.Category;
 import org.example.enums.GameStatus;
 
 
 import java.util.Locale;
 
+@Entity
+@Table(name = "boardgames")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @RequiredArgsConstructor
 public class BoardGame {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false, unique = true)
     @NonNull
     private String title;
+    @Column(nullable = false)
     @NonNull
     private String description;
-    @NonNull
+    @Column(nullable = false)
     private int minPlayers;
-    @NonNull
+    @Column(nullable = false)
     private int maxPlayers;
-    @NonNull
+    @Column(nullable = false)
     private int recommendedAge;
-    @NonNull
+    @Column(nullable = false)
     private int playingTimeMinutes;
+    @Column(nullable = false)
     @NonNull
     private String publisher;
+    @Column(nullable = false)
     @NonNull
     private Category category;
+    @Column(nullable = false)
     @NonNull
     private GameStatus status;
-    @NonNull
+    @Column(nullable = false)
     private double rating;
 
     /**

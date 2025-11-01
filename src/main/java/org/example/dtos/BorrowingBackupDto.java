@@ -5,7 +5,9 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.example.enums.BorrowingStatus;
+import org.example.models.BoardGame;
 import org.example.models.Borrowing;
+import org.example.models.User;
 
 import java.time.LocalDateTime;
 
@@ -16,9 +18,9 @@ public class BorrowingBackupDto {
     @NonNull
     private Long id;
     @NonNull
-    private Long userId;
+    private User user;
     @NonNull
-    private Long gameId;
+    private BoardGame game;
     @NonNull
     private LocalDateTime borrowDate;
     @NonNull
@@ -31,8 +33,8 @@ public class BorrowingBackupDto {
     public BorrowingBackupDto(Borrowing borrowing)
     {
         this.id = borrowing.getId();
-        this.userId = borrowing.getUserId();
-        this.gameId = borrowing.getGameId();
+        this.user = borrowing.getUser();
+        this.game = borrowing.getGame();
         this.borrowDate = borrowing.getBorrowDate();
         this.dueDate = borrowing.getDueDate();
         this.returnDate = borrowing.getReturnDate();
@@ -44,8 +46,8 @@ public class BorrowingBackupDto {
     {
         return new Borrowing(
                 id,
-                userId,
-                gameId,
+                user,
+                game,
                 borrowDate,
                 dueDate,
                 returnDate,

@@ -100,9 +100,9 @@ public class Main {
         // Example usage of builders classes
 
         User user = new User("Jan", "Kowalski", "jan.kowalski@example.com", UserRole.MEMBER, true);
-        BoardGame game = new BoardGame("Catan", "Handel i rozwój osad", 3, 4, 10, 90, "Kosmos",
+        BoardGame game = new BoardGame(null, "Catan", "Handel i rozwój osad", 3, 4, 10, 90, "Kosmos",
                 Category.STRATEGY, GameStatus.AVAILABLE, 8.6);
-        Borrowing borrowing = new Borrowing(100L, 1L, 10L,
+        Borrowing borrowing = new Borrowing(100L, user, game,
                 LocalDateTime.now().minusDays(2),
                 LocalDateTime.now().plusDays(5),
                 null, BorrowingStatus.ACTIVE, "Brak uwag");

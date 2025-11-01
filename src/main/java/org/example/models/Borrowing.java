@@ -27,18 +27,19 @@ public class Borrowing {
     @NonNull
     private BoardGame game;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name= "borrow_date")
     @NonNull
     private LocalDateTime borrowDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name= "due_date")
     @NonNull
     private LocalDateTime dueDate;
 
-    @Column
+    @Column(name= "return_date")
     private LocalDateTime returnDate;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     @NonNull
     private BorrowingStatus status;
 

@@ -24,22 +24,24 @@ public class BoardGame {
     @Column(nullable = false)
     @NonNull
     private String description;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "min_players")
     private int minPlayers;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "max_players")
     private int maxPlayers;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "recommended_age")
     private int recommendedAge;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "playing_time_minutes")
     private int playingTimeMinutes;
     @Column(nullable = false)
     @NonNull
     private String publisher;
     @Column(nullable = false)
     @NonNull
+    @Enumerated(EnumType.STRING)
     private Category category;
     @Column(nullable = false)
     @NonNull
+    @Enumerated(EnumType.STRING)
     private GameStatus status;
     @Column(nullable = false)
     private double rating;

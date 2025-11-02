@@ -159,7 +159,7 @@ public class Main {
 
 
 
-        //Zadanie 7. PraserService
+
         System.out.println("\n--- Parser Service Test ---");
         ParserService parser = new ParserService();
         HashMap<String, ArrayList<String>> data = parser.getResearchUnitsWithEmployees();

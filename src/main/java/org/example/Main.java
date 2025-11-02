@@ -156,9 +156,10 @@ public class Main {
         System.out.println("After restoring from backup: " + user.toString());
 
         SpringApplication.run(Main.class, args);
+
+
+
         //Zadanie 7. PraserService
-        System.out.println("\n--- Parser Service Test ---");
-        System.out.println("\n--- Parser Service Test ---");
         System.out.println("\n--- Parser Service Test ---");
         ParserService parser = new ParserService();
         HashMap<String, ArrayList<String>> data = parser.getResearchUnitsWithEmployees();

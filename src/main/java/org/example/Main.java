@@ -13,27 +13,19 @@ import org.example.enums.UserRole;
 import org.example.models.BoardGame;
 import org.example.models.Borrowing;
 import org.example.models.User;
-import org.example.modules.users.UserService;
 import org.example.service.FileService;
 import org.example.service.StreamService;
-import org.example.modules.boardgames.BoardGameService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 
 import java.time.LocalDateTime;
 import java.util.*;
+
 
 @SpringBootApplication
 public class Main {
     public static void main(String[] args) {
         System.out.println("Welcome to the Board Game Library Management System!");
-
-        ApplicationContext context = SpringApplication.run(Main.class, args);
-
-        StreamService streamService = new StreamService();
-        BoardGameService boardGameservice = context.getBean(BoardGameService.class);
-        UserService userService = context.getBean(UserService.class);
 
         // READ using java.io
         List<BoardGame> games = FileService.readBoardGamesIO();
@@ -57,22 +49,22 @@ public class Main {
         System.out.println("Added new game: " + newGame.getTitle());
 
         // FILTER get games with rating >= 8.0
-        List<BoardGame> filtered = streamService.filterByRating(games, 8.0);
+        List<BoardGame> filtered = StreamService.filterByRating(games, 8.0);
         System.out.println("\nFiltered games (rating >= 8.0):");
         filtered.forEach(g -> System.out.println(" - " + g.getTitle() + " (" + g.getRating() + ")"));
 
         // SORT games by rating descending
-        List<BoardGame> sorted = streamService.sortByRatingDescending(filtered);
+        List<BoardGame> sorted = StreamService.sortByRatingDescending(filtered);
         System.out.println("\nSorted by rating (descending):");
         sorted.forEach(g -> System.out.println(" - " + g.getTitle() + " (" + g.getRating() + ")"));
 
         // MAP get titles only
-        List<String> titles = streamService.mapToTitles(sorted);
+        List<String> titles = StreamService.mapToTitles(sorted);
         System.out.println("\nTitles of sorted games:");
         titles.forEach(System.out::println);
 
         // COUNT games per category
-        Map<Category, Long> counts = streamService.countCategoryOccurrences(games);
+        Map<Category, Long> counts = StreamService.countCategoryOccurrences(games);
         System.out.println("\nCategory counts:");
         counts.forEach((cat, count) -> System.out.println(cat + ": " + count));
 
@@ -99,10 +91,12 @@ public class Main {
 
         // Example usage of builders classes
 
-        User user = new User("Jan", "Kowalski", "jan.kowalski@example.com", UserRole.MEMBER, true);
-        BoardGame game = new BoardGame("Catan", "Handel i rozwój osad", 3, 4, 10, 90, "Kosmos",
+        User user = new User(1L,"Jan", "Kowalski", "jan.kowalski@example.com", UserRole.MEMBER, true);
+        BoardGame game = new BoardGame(1L, "Catan", "Handel i rozwój osad", 3, 4, 10, 90, "Kosmos",
                 Category.STRATEGY, GameStatus.AVAILABLE, 8.6);
-        Borrowing borrowing = new Borrowing(100L, 1L, 10L,
+        Borrowing borrowing = new Borrowing(100L,
+                1L, null,
+                1L, null,
                 LocalDateTime.now().minusDays(2),
                 LocalDateTime.now().plusDays(5),
                 null, BorrowingStatus.ACTIVE, "Brak uwag");
@@ -159,5 +153,6 @@ public class Main {
         user = userBackup.toEntity();
         System.out.println("After restoring from backup: " + user.toString());
 
+        SpringApplication.run(Main.class, args);
     }
 }

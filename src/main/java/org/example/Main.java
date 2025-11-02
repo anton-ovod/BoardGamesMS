@@ -13,6 +13,8 @@ import org.example.enums.UserRole;
 import org.example.models.BoardGame;
 import org.example.models.Borrowing;
 import org.example.models.User;
+import org.example.parser.ParserService;
+import org.example.parser.Employee;
 import org.example.service.FileService;
 import org.example.service.StreamService;
 import org.springframework.boot.SpringApplication;
@@ -154,5 +156,25 @@ public class Main {
         System.out.println("After restoring from backup: " + user.toString());
 
         SpringApplication.run(Main.class, args);
+
+
+
+
+        System.out.println("\n--- Parser Service Test ---");
+        ParserService parser = new ParserService();
+        HashMap<String, ArrayList<String>> data = parser.getResearchUnitsWithEmployees();
+        for (String ru : data.keySet()) {
+            for (String key : data.keySet()) {
+                System.out.println(key + " : " + data.get(key));
+            }
+        }
+
+        System.out.println("=== Employees with degree 'dr' ===");
+        List<Employee> drEmployees = parser.getEmployeesByDegree("dr");
+        drEmployees.forEach(System.out::println);
+
+        System.out.println("=== Employees with degree 'dr inż.' ===");
+        List<Employee> drInzEmployees = parser.getEmployeesByDegree("dr inż.");
+        drInzEmployees.forEach(System.out::println);
     }
 }

@@ -18,9 +18,9 @@ public class BorrowingBackupDto {
     @NonNull
     private Long id;
     @NonNull
-    private User user;
+    private Long userId;
     @NonNull
-    private BoardGame game;
+    private Long gameId;
     @NonNull
     private LocalDateTime borrowDate;
     @NonNull
@@ -33,8 +33,8 @@ public class BorrowingBackupDto {
     public BorrowingBackupDto(Borrowing borrowing)
     {
         this.id = borrowing.getId();
-        this.user = borrowing.getUser();
-        this.game = borrowing.getGame();
+        this.userId = borrowing.getUserId();
+        this.gameId = borrowing.getGameId();
         this.borrowDate = borrowing.getBorrowDate();
         this.dueDate = borrowing.getDueDate();
         this.returnDate = borrowing.getReturnDate();
@@ -46,8 +46,10 @@ public class BorrowingBackupDto {
     {
         return new Borrowing(
                 id,
-                user,
-                game,
+                userId,
+                null,
+                gameId,
+                null,
                 borrowDate,
                 dueDate,
                 returnDate,

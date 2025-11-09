@@ -22,20 +22,22 @@ public class UserRepository {
             rs.getString("last_name"),
             rs.getString("email"),
             UserRole.valueOf(rs.getString("role")),
-            rs.getBoolean("active")
+            rs.getBoolean("active"),
+            rs.getString("password")
     );
 
     public User create(User user) {
         Long id = jdbc.queryForObject(
-                "INSERT INTO users(first_name, last_name, email, role, active) VALUES (?, ?, ?, ?, ?) RETURNING id",
+                "INSERT INTO users(first_name, last_name, email, role, active, password) VALUES (?, ?, ?, ?, ?, ?) RETURNING id",
                 Long.class,
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
                 user.getRole().name(),
-                user.getActive()
+                user.getActive(),
+                user.getPassword()
         );
-        return new User(id, user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole(), user.getActive());
+        return new User(id, user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole(), user.getActive(), user.getPassword());
     }
 
     public User read(Long id) {
@@ -43,14 +45,20 @@ public class UserRepository {
         return users.isEmpty() ? null : users.get(0);
     }
 
+    public User readByEmail(String email) {
+        List<User> users = jdbc.query("SELECT * FROM users WHERE email = ?", mapper, email);
+        return users.isEmpty() ? null : users.get(0);
+    }
+
     public User update(User user) {
         int rows = jdbc.update(
-                "UPDATE users SET first_name = ?, last_name = ?, email = ?, role = ?, active = ? WHERE id = ?",
+                "UPDATE users SET first_name = ?, last_name = ?, email = ?, role = ?, active = ?, password = ? WHERE id = ?",
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
                 user.getRole().name(),
                 user.getActive(),
+                user.getPassword(),
                 user.getId()
         );
 

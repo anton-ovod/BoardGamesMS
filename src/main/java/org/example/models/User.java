@@ -30,8 +30,8 @@ public class User {
     @Column(nullable = false)
     @NonNull
     private Boolean active;
-
-    @Column
+    @Column(nullable = false)
+    @NonNull
     private String password;
 
     public String getFullName() {

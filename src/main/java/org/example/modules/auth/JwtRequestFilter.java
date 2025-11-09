@@ -39,8 +39,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return;
         }
 
-        final String token = header.substring(7);
-        final DecodedJWT jwt = jwtTokenService.validateToken(token);
+        String token = header.substring(7);
+        DecodedJWT jwt = jwtTokenService.validateToken(token);
         if (jwt == null || jwt.getSubject() == null) {
             SecurityContextHolder.clearContext();
             filterChain.doFilter(request, response);
@@ -50,13 +50,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         UserDetails userDetails;
         try {
             userDetails = jwtUserDetailsService.loadUserByUsername(jwt.getSubject());
-        } catch (final UsernameNotFoundException userNotFoundEx) {
+        } catch (UsernameNotFoundException userNotFoundEx) {
             SecurityContextHolder.clearContext();
             filterChain.doFilter(request, response);
             return;
         }
 
-        final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities());
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 

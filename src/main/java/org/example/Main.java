@@ -156,9 +156,6 @@ public class Main {
         user = userBackup.toEntity();
         System.out.println("After restoring from backup: " + user.toString());
 
-        //SpringApplication.run(Main.class, args);
-
-
         System.out.println("\n--- Parser Service Test ---");
         ParserService parser = new ParserService();
         HashMap<String, ArrayList<String>> data = parser.getResearchUnitsWithEmployees();
@@ -179,5 +176,7 @@ public class Main {
         System.out.println("--- Holidays from pollub.pl ---");
         ArrayList<Holiday> holidays =  parser.getHolidays();
         holidays.forEach(System.out::println);
+
+        SpringApplication.run(Main.class, args);
     }
 }

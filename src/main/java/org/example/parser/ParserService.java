@@ -1,16 +1,23 @@
 package org.example.parser;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.net.ssl.*;
+import java.security.cert.X509Certificate;
 
 public class ParserService {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
 
     private ParsedData parseRawData(){
         List<String> researchUnits = new ArrayList<>();
@@ -85,6 +92,84 @@ public class ParserService {
             }
         }
         return filteredEmployees;
+    }
+
+
+    public ArrayList<Holiday> getHolidays() {
+        ArrayList<Holiday> holidays = new ArrayList<>();
+        try {
+            disableSSLCertCheck();
+
+            int totalPages = fetchTotalPages();
+            Elements allPosts = fetchAllPosts(totalPages);
+            Elements holidayPosts = filterHolidayPosts(allPosts);
+            holidays = new ArrayList<>(parseHolidayPosts(holidayPosts));
+
+            holidays.sort(Comparator.comparing(Holiday::getDate));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return holidays;
+    }
+
+
+    private int fetchTotalPages() throws IOException {
+        Document doc = Jsoup.connect("https://pollub.pl/rekrutacja/aktualnosci").get();
+        Elements lastPage = doc.selectXpath("/html/body/section[3]/div/div/div/div/div[1]/ul/li[5]/a");
+        return Integer.parseInt(lastPage.get(0).text());
+    }
+
+    private Elements fetchAllPosts(int totalPages) throws IOException {
+        Elements allPosts = new Elements();
+        for (int i = 1; i <= totalPages; i++) {
+            Document pageDoc = Jsoup.connect("https://pollub.pl/rekrutacja/aktualnosci/page" + i + ".html").get();
+            Elements posts = pageDoc.selectXpath("//div[@class='news-content px-3']");
+            allPosts.addAll(posts);
+        }
+        return allPosts;
+    }
+
+    private Elements filterHolidayPosts(Elements allPosts) {
+        Elements holidayPosts = new Elements();
+        for (Element e : allPosts) {
+            String title = e.selectFirst("a").text().toLowerCase();
+            if (title.contains("dzień rektorski") ||
+                    title.contains("dni rektorskie") ||
+                    title.contains("godziny rektorskie") ||
+                    title.contains("informacja o godzinach rektorskich")) {
+                holidayPosts.add(e);
+            }
+        }
+        return holidayPosts;
+    }
+
+    private List<Holiday> parseHolidayPosts(Elements holidayPosts) {
+        List<Holiday> holidays = new ArrayList<>();
+        for (Element e : holidayPosts) {
+            String title = e.selectFirst("a.title").text();
+            String dateText = e.selectFirst("div.text-primary").text();
+            holidays.add(new Holiday(title, LocalDate.parse(dateText, formatter)));
+        }
+        return holidays;
+    }
+
+    public static void disableSSLCertCheck() {
+        try {
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        public X509Certificate[] getAcceptedIssuers() { return null; }
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) { }
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) { }
+                    }
+            };
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

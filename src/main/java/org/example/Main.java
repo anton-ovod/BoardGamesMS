@@ -13,6 +13,7 @@ import org.example.enums.UserRole;
 import org.example.models.BoardGame;
 import org.example.models.Borrowing;
 import org.example.models.User;
+import org.example.parser.Holiday;
 import org.example.parser.ParserService;
 import org.example.parser.Employee;
 import org.example.service.FileService;
@@ -155,9 +156,7 @@ public class Main {
         user = userBackup.toEntity();
         System.out.println("After restoring from backup: " + user.toString());
 
-        SpringApplication.run(Main.class, args);
-
-
+        //SpringApplication.run(Main.class, args);
 
 
         System.out.println("\n--- Parser Service Test ---");
@@ -169,12 +168,16 @@ public class Main {
             }
         }
 
-        System.out.println("=== Employees with degree 'dr' ===");
+        System.out.println("--- Employees with degree 'dr' ---");
         List<Employee> drEmployees = parser.getEmployeesByDegree("dr");
         drEmployees.forEach(System.out::println);
 
-        System.out.println("=== Employees with degree 'dr inż.' ===");
+        System.out.println("--- Employees with degree 'dr inż.' ---");
         List<Employee> drInzEmployees = parser.getEmployeesByDegree("dr inż.");
         drInzEmployees.forEach(System.out::println);
+
+        System.out.println("--- Holidays from pollub.pl ---");
+        ArrayList<Holiday> holidays =  parser.getHolidays();
+        holidays.forEach(System.out::println);
     }
 }

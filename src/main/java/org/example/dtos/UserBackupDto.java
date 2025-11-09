@@ -14,6 +14,7 @@ public class UserBackupDto {
     private String email;
     private UserRole role;
     private Boolean active;
+    private String password;
 
     public UserBackupDto(User user)
     {
@@ -23,6 +24,7 @@ public class UserBackupDto {
         this.email = user.getEmail();
         this.role = user.getRole();
         this.active = user.getActive();
+        this.password = user.getPassword();
     }
 
     public User toEntity()
@@ -33,7 +35,8 @@ public class UserBackupDto {
                 lastName,
                 email,
                 role,
-                active
+                active,
+                password
         );
     }
 }

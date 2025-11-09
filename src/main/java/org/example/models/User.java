@@ -31,6 +31,9 @@ public class User {
     @NonNull
     private Boolean active;
 
+    @Column
+    private String password;
+
     public String getFullName() {
         return firstName + " " + lastName;
     }

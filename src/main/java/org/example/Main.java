@@ -93,7 +93,7 @@ public class Main {
 
         // Example usage of builders classes
 
-        User user = new User(1L,"Jan", "Kowalski", "jan.kowalski@example.com", UserRole.MEMBER, true);
+        User user = new User(1L,"Jan", "Kowalski", "jan.kowalski@example.com", UserRole.MEMBER, true, "password");
         BoardGame game = new BoardGame(1L, "Catan", "Handel i rozwój osad", 3, 4, 10, 90, "Kosmos",
                 Category.STRATEGY, GameStatus.AVAILABLE, 8.6);
         Borrowing borrowing = new Borrowing(100L,

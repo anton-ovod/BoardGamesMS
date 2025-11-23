@@ -6,6 +6,8 @@ import org.example.models.BoardGame;
 
 import javax.xml.stream.*;
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -15,16 +17,18 @@ import java.util.List;
 
 public class FileService
 {
-    private static final String INPUT_FILE_PATH = "src/main/resources/boardgames.txt";
-    private static final String OUTPUT_FILE_PATH = "src/main/resources/boardgames-modified.txt";
-    private static final String INPUT_FILE_PATH_XML = "src/main/resources/boardgames.xml";
-    private static final String OUTPUT_FILE_PATH_XML = "src/main/resources/boardgames-modified.xml";
+    private static final String INPUT_FILE_NAME = "boardgames.txt";
+    private static final String OUTPUT_FILE_NAME = "boardgames-modified.txt";
+    private static final String XML_INPUT_FILE_NAME = "boardgames.xml";
+    private static final String XML_OUTPUT_FILE_NAME = "boardgames-modified.xml";
+    private static final Path OUTPUT_DIR = Paths.get("rest-api", "output");
     private static final String HEADER = "id|title|description|minPlayers|maxPlayers|recommendedAge|playingTimeMinutes|publisher|category|status|rating";
 
     public static List<BoardGame> readBoardGamesIO() {
         List<BoardGame> games = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(INPUT_FILE_PATH))) {
+        InputStream is = FileService.class.getClassLoader().getResourceAsStream(INPUT_FILE_NAME);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             String line;
             boolean header = true;
             while ((line = reader.readLine()) != null) {
@@ -44,16 +48,16 @@ public class FileService
 
             System.out.println("✅ Data read using java.io successfully!");
         }
-        catch(FileNotFoundException e) {
-            System.out.println("❌ File not found: " + INPUT_FILE_PATH);
+        catch(FileNotFoundException | NullPointerException e) {
+            System.out.println("❌ File not found: " + INPUT_FILE_NAME);
             System.err.println(e.getMessage());
         }
         catch(IllegalArgumentException e) {
-            System.out.println("❌ Data format error in file: " + INPUT_FILE_PATH);
+            System.out.println("❌ Data format error in file: " + INPUT_FILE_NAME);
             System.err.println(e.getMessage());
         }
         catch (IOException e) {
-            System.out.println("❌ Error reading file: " + INPUT_FILE_PATH);
+            System.out.println("❌ Error reading file: " + INPUT_FILE_NAME);
             System.err.println(e.getMessage());
         }
 
@@ -61,19 +65,25 @@ public class FileService
     }
 
     public static void saveBoardGamesIO(List<BoardGame> games) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(OUTPUT_FILE_PATH)))) {
+        try {
+            Files.createDirectories(OUTPUT_DIR);
+
+            Path output = OUTPUT_DIR.resolve(OUTPUT_FILE_NAME);
+
+            try (BufferedWriter writer = Files.newBufferedWriter(output)) {
                 writer.write(HEADER);
                 writer.newLine();
 
-            for (BoardGame g : games) {
-                writer.write(g.toFileString());
-                writer.newLine();
+                for (BoardGame g : games) {
+                    writer.write(g.toFileString());
+                    writer.newLine();
+                }
             }
 
             System.out.println("✅ Data saved using java.io successfully!");
+
         } catch (IOException e) {
-            System.out.println("❌ Error writing to file: " + INPUT_FILE_PATH);
-            System.err.println(e.getMessage());
+            System.err.println("❌ Error writing txt: " + e.getMessage());
         }
     }
 
@@ -81,7 +91,9 @@ public class FileService
         List<BoardGame> games = new ArrayList<>();
 
         try{
-            Path path = Paths.get(INPUT_FILE_PATH);
+            URL resource = FileService.class.getClassLoader().getResource(INPUT_FILE_NAME);
+
+            Path path = Paths.get(resource.toURI());
             List<String> lines = Files.readAllLines(path);
             for(int i = 1; i < lines.size(); i++)
             {
@@ -96,16 +108,16 @@ public class FileService
 
             System.out.println("✅ Data read using java.nio successfully!");
         }
-        catch (InvalidPathException e) {
-            System.out.println("❌ File not found: " + INPUT_FILE_PATH);
+        catch (InvalidPathException | NullPointerException | URISyntaxException e) {
+            System.out.println("❌ File not found: " + INPUT_FILE_NAME);
             System.err.println(e.getMessage());
         }
         catch(IllegalArgumentException e) {
-            System.out.println("❌ Data format error in file: " + INPUT_FILE_PATH);
+            System.out.println("❌ Data format error in file: " + INPUT_FILE_NAME);
             System.err.println(e.getMessage());
         }
         catch (IOException e) {
-            System.out.println("❌ Error reading file: " + INPUT_FILE_PATH);
+            System.out.println("❌ Error reading file: " + INPUT_FILE_NAME);
             System.err.println(e.getMessage());
         }
 
@@ -113,23 +125,24 @@ public class FileService
     }
 
     public static void saveBoardGamesNIO(List<BoardGame> games) {
-        List<String> lines = new ArrayList<>();
-        lines.add(HEADER);
-        for (BoardGame g : games) {
-            lines.add(g.toFileString());
-        }
-
         try {
-            Path path = Paths.get(OUTPUT_FILE_PATH);
-            Files.write(path, lines);
+            Files.createDirectories(OUTPUT_DIR);
+
+            Path output = OUTPUT_DIR.resolve(OUTPUT_FILE_NAME);
+
+            List<String> lines = new ArrayList<>();
+            lines.add(HEADER);
+
+            for (BoardGame g : games) {
+                lines.add(g.toFileString());
+            }
+
+            Files.write(output, lines);
 
             System.out.println("✅ Data saved using java.nio successfully!");
-        } catch (InvalidPathException e) {
-            System.out.println("❌ File not found: " + INPUT_FILE_PATH);
-            System.err.println(e.getMessage());
+
         } catch (IOException e) {
-            System.out.println("❌ Error writing to file: " + INPUT_FILE_PATH);
-            System.err.println(e.getMessage());
+            System.err.println("❌ Error writing txt (nio): " + e.getMessage());
         }
     }
 
@@ -140,10 +153,12 @@ public class FileService
     }
 
     public static void saveBoardGamesXML(List<BoardGame> games) {
-        XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+        try {
+            Files.createDirectories(OUTPUT_DIR);
+            Path output = OUTPUT_DIR.resolve(XML_OUTPUT_FILE_NAME);
 
-        try (FileOutputStream fos = new FileOutputStream(OUTPUT_FILE_PATH_XML)) {
-            XMLStreamWriter writer = outputFactory.createXMLStreamWriter(fos, "UTF-8");
+            XMLOutputFactory factory = XMLOutputFactory.newInstance();
+            XMLStreamWriter writer = factory.createXMLStreamWriter(Files.newOutputStream(output), "UTF-8");
 
             writer.writeStartDocument("UTF-8", "1.0");
             writer.writeStartElement("boardGames");
@@ -163,15 +178,14 @@ public class FileService
                 writeElem(writer, "status", game.getStatus().name());
                 writeElem(writer, "rating", String.valueOf(game.getRating()));
 
-                writer.writeEndElement(); // </boardGame>
+                writer.writeEndElement();
             }
 
-            writer.writeEndElement(); // </boardGames>
+            writer.writeEndElement();
             writer.writeEndDocument();
-            writer.flush();
             writer.close();
         } catch (IOException | XMLStreamException e) {
-            System.err.println("❌ Cannot create or write to file: " + OUTPUT_FILE_PATH_XML);
+            System.err.println("❌ Cannot create or write to file: " + XML_OUTPUT_FILE_NAME);
             System.err.println(e.getMessage());
         }
     }
@@ -180,8 +194,8 @@ public class FileService
         List<BoardGame> games = new ArrayList<>();
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 
-        try (FileInputStream fis = new FileInputStream(INPUT_FILE_PATH_XML)) {
-            XMLStreamReader reader = inputFactory.createXMLStreamReader(fis);
+        try (InputStream is = FileService.class.getClassLoader().getResourceAsStream(XML_INPUT_FILE_NAME)) {
+            XMLStreamReader reader = inputFactory.createXMLStreamReader(is);
 
             String currentTag = null;
 
@@ -246,7 +260,7 @@ public class FileService
 
             reader.close();
         } catch (FileNotFoundException e) {
-            System.err.println("❌ Input XML file not found: " + INPUT_FILE_PATH_XML);
+            System.err.println("❌ Input XML file not found: " + XML_INPUT_FILE_NAME);
         } catch (XMLStreamException e) {
             System.err.println("❌ Error while reading XML: " + e.getMessage());
         } catch (IOException e) {

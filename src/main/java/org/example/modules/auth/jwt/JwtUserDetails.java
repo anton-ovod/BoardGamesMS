@@ -1,4 +1,4 @@
-package org.example.modules.auth;
+package org.example.modules.auth.jwt;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;

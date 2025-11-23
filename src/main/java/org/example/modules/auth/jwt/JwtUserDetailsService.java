@@ -1,4 +1,4 @@
-package org.example.modules.auth;
+package org.example.modules.auth.jwt;
 
 import org.example.models.User;
 import org.example.modules.users.UserRepository;

@@ -1,6 +1,9 @@
 package org.example.modules.auth;
 
+import org.example.dtos.AuthRequest;
 import org.example.models.User;
+import org.example.modules.auth.jwt.JwtTokenService;
+import org.example.modules.auth.jwt.JwtUserDetailsService;
 import org.example.modules.users.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

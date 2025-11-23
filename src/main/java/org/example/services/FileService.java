@@ -1,4 +1,4 @@
-package org.example.service;
+package org.example.services;
 
 import org.example.enums.Category;
 import org.example.enums.GameStatus;

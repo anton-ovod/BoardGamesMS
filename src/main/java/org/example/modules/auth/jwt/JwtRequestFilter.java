@@ -1,4 +1,4 @@
-package org.example.modules.auth;
+package org.example.modules.auth.jwt;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.FilterChain;

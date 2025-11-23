@@ -1,5 +1,8 @@
-package org.example.parser;
+package org.example.services;
 
+import org.example.models.Employee;
+import org.example.models.Holiday;
+import org.example.models.ParsedData;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -41,8 +44,8 @@ public class ParserService {
 
     public List<Employee> getEmployees(){
         ParsedData parsedData = parseRawData();
-        List<String> researchUnits = parsedData.getResearchUnits();
-        List<List<String>> employeesData = parsedData.getEmployeesData();
+        List<String> researchUnits = parsedData.researchUnits();
+        List<List<String>> employeesData = parsedData.employeesData();
         List<Employee> employees = new ArrayList<>();
 
         for(int i = 0;  i < employeesData.size(); i++)

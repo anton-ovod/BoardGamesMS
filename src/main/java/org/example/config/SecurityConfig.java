@@ -1,9 +1,9 @@
-package org.example;
+package org.example.config;
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.modules.auth.JwtRequestFilter;
-import org.example.modules.auth.JwtTokenService;
-import org.example.modules.auth.JwtUserDetailsService;
+import org.example.modules.auth.jwt.JwtRequestFilter;
+import org.example.modules.auth.jwt.JwtTokenService;
+import org.example.modules.auth.jwt.JwtUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

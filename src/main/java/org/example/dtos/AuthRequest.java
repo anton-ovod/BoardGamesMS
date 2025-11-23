@@ -1,4 +1,4 @@
-package org.example.modules.auth;
+package org.example.dtos;
 
 import lombok.Data;
 import lombok.NonNull;

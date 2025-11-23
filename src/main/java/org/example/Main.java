@@ -13,11 +13,11 @@ import org.example.enums.UserRole;
 import org.example.models.BoardGame;
 import org.example.models.Borrowing;
 import org.example.models.User;
-import org.example.parser.Holiday;
-import org.example.parser.ParserService;
-import org.example.parser.Employee;
-import org.example.service.FileService;
-import org.example.service.StreamService;
+import org.example.models.Holiday;
+import org.example.services.ParserService;
+import org.example.models.Employee;
+import org.example.services.FileService;
+import org.example.services.StreamService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

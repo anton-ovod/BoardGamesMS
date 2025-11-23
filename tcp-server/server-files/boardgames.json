@@ -1,0 +1,41 @@
+[
+  {
+    "id": 1,
+    "title": "Catan",
+    "description": "A strategic game of trading, building, and expanding your settlement.",
+    "minPlayers": 3,
+    "maxPlayers": 4,
+    "recommendedAge": 10,
+    "playingTimeMinutes": 75,
+    "publisher": "Kosmos",
+    "category": "STRATEGY",
+    "status": "AVAILABLE",
+    "rating": 4.5
+  },
+  {
+    "id": 2,
+    "title": "Azul",
+    "description": "An abstract tile-drafting game where players decorate a palace with beautiful tiles.",
+    "minPlayers": 2,
+    "maxPlayers": 4,
+    "recommendedAge": 8,
+    "playingTimeMinutes": 45,
+    "publisher": "Plan B Games",
+    "category": "ABSTRACT",
+    "status": "AVAILABLE",
+    "rating": 4.2
+  },
+  {
+    "id": 3,
+    "title": "Terraforming Mars",
+    "description": "A complex engine-building game about terraforming the red planet.",
+    "minPlayers": 1,
+    "maxPlayers": 5,
+    "recommendedAge": 12,
+    "playingTimeMinutes": 120,
+    "publisher": "FryxGames",
+    "category": "SCI_FI",
+    "status": "BORROWED",
+    "rating": 4.8
+  }
+]

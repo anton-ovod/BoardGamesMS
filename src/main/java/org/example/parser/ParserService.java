@@ -86,7 +86,7 @@ public class ParserService {
         List<Employee> employees = getEmployees();
         List<Employee> filteredEmployees = new ArrayList<>();
         for(Employee e : employees){
-            if(e.getAcaedmicDegree().equals(degree)){
+            if(e.getAcademicDegree().equals(degree)){
                 filteredEmployees.add(e);
             }
         }

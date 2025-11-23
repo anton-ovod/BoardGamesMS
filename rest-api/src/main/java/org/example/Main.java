@@ -172,7 +172,7 @@ public class Main {
         drInzEmployees.forEach(System.out::println);
 
         System.out.println("--- Holidays from pollub.pl ---");
-        ArrayList<Holiday> holidays =  parser.getHolidays();
+        //ArrayList<Holiday> holidays =  parser.getHolidays();
         //holidays.forEach(System.out::println);
 
         SpringApplication.run(Main.class, args);

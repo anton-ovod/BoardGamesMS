@@ -7,35 +7,50 @@
 	},
 	"item": [
 		{
-			"name": "Users",
+			"name": "Auth",
 			"item": [
 				{
-					"name": "Get Users",
+					"name": "Login",
 					"request": {
-						"method": "GET",
+						"method": "POST",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"firstName\": \"Vito\",\r\n  \"lastName\": \"Scaletta\",\r\n  \"email\": \"vito.scaletta@gmail.com\",\r\n  \"role\": \"ADMIN\",\r\n  \"active\": true,\r\n  \"password\": \"mypassword\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://localhost:8080/users",
+							"raw": "http://localhost:8080/auth/register",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"users"
+								"auth",
+								"register"
 							]
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Get User",
-					"request": {
-						"method": "GET",
-						"header": []
-					},
-					"response": []
-				},
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
 				{
 					"name": "Create User",
 					"request": {
@@ -61,6 +76,33 @@
 								"users"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User",
+					"request": {
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				},
@@ -226,7 +268,137 @@
 		},
 		{
 			"name": "Borrowings",
-			"item": []
+			"item": [
+				{
+					"name": "Get Borrowing",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/borrowings/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"borrowings",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Borrowings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/borrowings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"borrowings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Borrowing",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user\": { \"id\": 1 },\n  \"game\": { \"id\": 2 },\n  \"borrowDate\": \"2025-11-01T10:00:00\",\n  \"dueDate\": \"2025-11-10T10:00:00\",\n  \"status\": \"BORROWED\",\n  \"notes\": \"Handle carefully\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/borrowings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"borrowings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Borrowing",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user\": { \"id\": 1 },\n  \"game\": { \"id\": 2 },\n  \"borrowDate\": \"2025-11-01T10:00:00\",\n  \"dueDate\": \"2025-11-12T10:00:00\",\n  \"returnDate\": \"2025-11-11T15:00:00\",\n  \"status\": \"RETURNED\",\n  \"notes\": \"Returned on time\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/borrowings/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"borrowings",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Borrowing",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/borrowings/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"borrowings",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TCP",
+			"item": [
+				{
+					"name": "Get fille",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

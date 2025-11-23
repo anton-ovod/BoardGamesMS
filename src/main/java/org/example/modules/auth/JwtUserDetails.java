@@ -8,7 +8,10 @@ import java.util.Collections;
 public class JwtUserDetails extends User {
     public final Long id;
 
-    public JwtUserDetails(Long id, String username, String password, GrantedAuthority authority) {
+    public JwtUserDetails(Long id,
+                          String username,
+                          String password,
+                          GrantedAuthority authority) {
         super(username, password, Collections.singletonList(authority));
         this.id = id;
     }

@@ -1,6 +1,5 @@
 package org.example.parser;
 
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -154,7 +153,7 @@ public class ParserService {
         return holidays;
     }
 
-    public static void disableSSLCertCheck() {
+    private static void disableSSLCertCheck() {
         try {
             TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {

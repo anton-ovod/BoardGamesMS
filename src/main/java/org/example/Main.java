@@ -159,10 +159,8 @@ public class Main {
         System.out.println("\n--- Parser Service Test ---");
         ParserService parser = new ParserService();
         HashMap<String, ArrayList<String>> data = parser.getResearchUnitsWithEmployees();
-        for (String ru : data.keySet()) {
-            for (String key : data.keySet()) {
-                System.out.println(key + " : " + data.get(key));
-            }
+        for (String key : data.keySet()) {
+            System.out.println(key + " : " + data.get(key));
         }
 
         System.out.println("--- Employees with degree 'dr' ---");

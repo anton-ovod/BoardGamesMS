@@ -3,6 +3,8 @@ package org.example.services;
 import org.example.enums.Category;
 import org.example.enums.GameStatus;
 import org.example.models.BoardGame;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import javax.xml.stream.*;
 import java.io.*;
@@ -15,16 +17,32 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class FileService
 {
-    private static final String INPUT_FILE_NAME = "boardgames.txt";
-    private static final String OUTPUT_FILE_NAME = "boardgames-modified.txt";
-    private static final String XML_INPUT_FILE_NAME = "boardgames.xml";
-    private static final String XML_OUTPUT_FILE_NAME = "boardgames-modified.xml";
-    private static final Path OUTPUT_DIR = Paths.get("rest-api", "output");
+    private final String INPUT_FILE_NAME;
+    private final String OUTPUT_FILE_NAME;
+    private final String XML_INPUT_FILE_NAME;
+    private final String XML_OUTPUT_FILE_NAME;
+    private final Path OUTPUT_DIR;
     private static final String HEADER = "id|title|description|minPlayers|maxPlayers|recommendedAge|playingTimeMinutes|publisher|category|status|rating";
 
-    public static List<BoardGame> readBoardGamesIO() {
+
+    public FileService(
+            @Value("${file.input:boardgames.txt}") String inputFileName,
+            @Value("${file.output:boardgames-modified.txt}") String outputFileName,
+            @Value("${file.xml.input:boardgames.xml}") String xmlInputFileName,
+            @Value("${file.xml.output:boardgames-modified.xml}") String xmlOutputFileName,
+            @Value("${file.output.dir:rest-api/output}") String outputDirStr
+    ) {
+        this.INPUT_FILE_NAME = inputFileName;
+        this.OUTPUT_FILE_NAME = outputFileName;
+        this.XML_INPUT_FILE_NAME = xmlInputFileName;
+        this.XML_OUTPUT_FILE_NAME = xmlOutputFileName;
+        this.OUTPUT_DIR = Paths.get(outputDirStr);
+    }
+
+    public List<BoardGame> readBoardGamesIO() {
         List<BoardGame> games = new ArrayList<>();
 
         InputStream is = FileService.class.getClassLoader().getResourceAsStream(INPUT_FILE_NAME);
@@ -64,7 +82,7 @@ public class FileService
         return games;
     }
 
-    public static void saveBoardGamesIO(List<BoardGame> games) {
+    public void saveBoardGamesIO(List<BoardGame> games) {
         try {
             Files.createDirectories(OUTPUT_DIR);
 
@@ -87,7 +105,7 @@ public class FileService
         }
     }
 
-    public static List<BoardGame> readBoardGamesNIO() {
+    public List<BoardGame> readBoardGamesNIO() {
         List<BoardGame> games = new ArrayList<>();
 
         try{
@@ -124,7 +142,7 @@ public class FileService
         return games;
     }
 
-    public static void saveBoardGamesNIO(List<BoardGame> games) {
+    public void saveBoardGamesNIO(List<BoardGame> games) {
         try {
             Files.createDirectories(OUTPUT_DIR);
 
@@ -146,13 +164,13 @@ public class FileService
         }
     }
 
-    private static void writeElem(XMLStreamWriter writer, String name, String value) throws XMLStreamException {
+    private void writeElem(XMLStreamWriter writer, String name, String value) throws XMLStreamException {
         writer.writeStartElement(name);
         writer.writeCharacters(value);
         writer.writeEndElement();
     }
 
-    public static void saveBoardGamesXML(List<BoardGame> games) {
+    public void saveBoardGamesXML(List<BoardGame> games) {
         try {
             Files.createDirectories(OUTPUT_DIR);
             Path output = OUTPUT_DIR.resolve(XML_OUTPUT_FILE_NAME);
@@ -190,7 +208,7 @@ public class FileService
         }
     }
 
-    public static List<BoardGame> readBoardGamesXML() {
+    public List<BoardGame> readBoardGamesXML() {
         List<BoardGame> games = new ArrayList<>();
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 

@@ -7,13 +7,10 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-import java.io.*;
-import java.nio.file.*;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,27 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestPropertySource(locations = "classpath:application-test.properties")
 class FileServiceTest {
 
-    @TempDir
-    Path tempDir;
-
     @Autowired
     FileService fileService;
-
-    private List<BoardGame> sampleGames;
-    private static final String TEST_HEADER = "id|title|description|minPlayers|maxPlayers|recommendedAge|playingTimeMinutes|publisher|category|status|rating";
-
-    @BeforeEach
-    void setUp() {
-        sampleGames = Arrays.asList(
-                new BoardGame(1L, "Catan", "Settlers game", 3, 4, 10, 90, "Kosmos", Category.STRATEGY, GameStatus.AVAILABLE, 8.5),
-                new BoardGame(2L, "Pandemic", "Cooperative game", 2, 4, 8, 45, "Z-Man", Category.COOPERATIVE, GameStatus.RESERVED, 9.0)
-        );
-    }
-
-    @AfterEach
-    void tearDown() {
-        sampleGames = null;
-    }
 
     @Test
     void givenFileExists_whenReadBoardGamesIO_thenReturnsNonEmptyList() {
@@ -64,7 +42,7 @@ class FileServiceTest {
         assertNotNull(games);
         assertAll("games validation",
                 () -> assertNotNull(games),
-                () -> assertTrue(games.size() >= 0)
+                () -> assertFalse(games.isEmpty())
         );
     }
 
@@ -90,7 +68,7 @@ class FileServiceTest {
     })
     void givenDifferentCombinations_whenSaveBoardGamesXML_thenSavesSuccessfully(Category category, GameStatus status) {
 
-        List<BoardGame> games = Arrays.asList(
+        List<BoardGame> games = List.of(
                 new BoardGame(1L, "Test Game", "Desc", 2, 4, 10, 60, "Pub", category, status, 7.0)
         );
         assertDoesNotThrow(() -> fileService.saveBoardGamesXML(games));
@@ -105,6 +83,10 @@ class FileServiceTest {
 
     @Test
     void givenValidList_whenSaveBoardGamesNIO_thenSavesSuccessfully() {
+        List<BoardGame> sampleGames = Arrays.asList(
+                new BoardGame(1L, "Catan", "Settlers game", 3, 4, 10, 90, "Kosmos", Category.STRATEGY, GameStatus.AVAILABLE, 8.5),
+                new BoardGame(2L, "Pandemic", "Cooperative game", 2, 4, 8, 45, "Z-Man", Category.COOPERATIVE, GameStatus.RESERVED, 9.0)
+        );
         assertDoesNotThrow(() -> fileService.saveBoardGamesNIO(sampleGames));
     }
 

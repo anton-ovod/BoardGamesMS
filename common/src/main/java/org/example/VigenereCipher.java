@@ -1,7 +1,5 @@
 package org.example;
 
-import java.nio.charset.StandardCharsets;
-
 public class VigenereCipher {
     private final byte[] keyBytes;
 
@@ -29,13 +27,5 @@ public class VigenereCipher {
             out[i] = (byte) ((d - k) & 0xFF);
         }
         return out;
-    }
-
-    public byte[] encrypt(String text) {
-        return encrypt(text.getBytes(StandardCharsets.UTF_8));
-    }
-
-    public String decryptToString(byte[] data) {
-        return new String(decrypt(data), StandardCharsets.UTF_8);
     }
 }

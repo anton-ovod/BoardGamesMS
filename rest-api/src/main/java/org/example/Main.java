@@ -20,6 +20,7 @@ import org.example.services.FileService;
 import org.example.services.StreamService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -28,10 +29,14 @@ import java.util.*;
 @SpringBootApplication
 public class Main {
     public static void main(String[] args) {
+        ApplicationContext context = SpringApplication.run(Main.class, args);
+
+        FileService fileService = context.getBean(FileService.class);
+
         System.out.println("Welcome to the Board Game Library Management System!");
 
         // READ using java.io
-        List<BoardGame> games = FileService.readBoardGamesIO();
+        List<BoardGame> games = fileService.readBoardGamesIO();
         System.out.println("Read " + games.size() + " games from file.");
 
         // ADD new games
@@ -72,12 +77,12 @@ public class Main {
         counts.forEach((cat, count) -> System.out.println(cat + ": " + count));
 
         // SAVE to file using java.nio
-        FileService.saveBoardGamesNIO(sorted);
+        fileService.saveBoardGamesNIO(sorted);
 
         // XML SERVICE TESTING
 
         //READ from BoardGame XML
-        List<BoardGame> xmlGames = FileService.readBoardGamesXML();
+        List<BoardGame> xmlGames = fileService.readBoardGamesXML();
         System.out.println("\n✅ Data read from XML:");
         xmlGames.forEach(System.out::println);
 
@@ -89,7 +94,7 @@ public class Main {
         xmlGames.addAll(newGames);
 
         //WRITE to BoardGame XML
-        FileService.saveBoardGamesXML(xmlGames);
+        fileService.saveBoardGamesXML(xmlGames);
         System.out.println("✅ Data saved into XML.");
 
         // Example usage of builders classes

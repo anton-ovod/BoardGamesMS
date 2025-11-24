@@ -52,7 +52,7 @@ public class TcpServer {
             Path filePath = filesDir.resolve(fileName).normalize();
 
             if (!filePath.startsWith(filesDir) || !Files.exists(filePath) || Files.isDirectory(filePath)) {
-                String err = "ERROR: file not found";
+                String err = "ERR:NO_FILE";
                 byte[] enc = cipher.encrypt(err.getBytes());
                 sendWithLength(out, enc);
                 return;

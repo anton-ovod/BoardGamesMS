@@ -66,6 +66,10 @@ public class UserRepository {
         return read(user.getId());
     }
 
+    public void deleteAll() {
+        jdbc.update("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
+    }
+
     public int delete(Long id) {
         return jdbc.update("DELETE FROM users WHERE id = ?", id);
     }

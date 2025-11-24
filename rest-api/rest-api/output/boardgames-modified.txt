@@ -1,0 +1,11 @@
+id|title|description|minPlayers|maxPlayers|recommendedAge|playingTimeMinutes|publisher|category|status|rating
+0|Game0|Desc|2|4|10|60|Pub|STRATEGY|AVAILABLE|7.0
+1|Game1|Desc|2|4|10|60|Pub|STRATEGY|AVAILABLE|7.0
+2|Game2|Desc|2|4|10|60|Pub|STRATEGY|AVAILABLE|7.0
+3|Game3|Desc|2|4|10|60|Pub|STRATEGY|AVAILABLE|7.0
+4|Game4|Desc|2|4|10|60|Pub|STRATEGY|AVAILABLE|7.0
+5|Game5|Desc|2|4|10|60|Pub|STRATEGY|AVAILABLE|7.0
+6|Game6|Desc|2|4|10|60|Pub|STRATEGY|AVAILABLE|7.0
+7|Game7|Desc|2|4|10|60|Pub|STRATEGY|AVAILABLE|7.0
+8|Game8|Desc|2|4|10|60|Pub|STRATEGY|AVAILABLE|7.0
+9|Game9|Desc|2|4|10|60|Pub|STRATEGY|AVAILABLE|7.0

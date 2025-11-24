@@ -23,7 +23,7 @@ public class BoardGameController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BoardGame> read(@PathVariable Long id) {
+    public ResponseEntity<BoardGame> read(@PathVariable("id") Long id) {
         BoardGame game = service.read(id);
         return game != null ? ResponseEntity.ok(game) : ResponseEntity.notFound().build();
     }
@@ -34,14 +34,14 @@ public class BoardGameController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BoardGame> update(@PathVariable Long id, @RequestBody BoardGame game) {
+    public ResponseEntity<BoardGame> update(@PathVariable("id") Long id, @RequestBody BoardGame game) {
         game.setId(id);
         BoardGame updated = service.update(game);
         return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         int rows = service.delete(id);
         return rows > 0 ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }

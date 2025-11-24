@@ -1,5 +1,6 @@
 package org.example.modules.auth.jwt;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,41 +27,38 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
 
-        final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (header == null || !header.startsWith("Bearer ")) {
-            SecurityContextHolder.clearContext();
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String token = header.substring(7);
-        DecodedJWT jwt = jwtTokenService.validateToken(token);
-        if (jwt == null || jwt.getSubject() == null) {
-            SecurityContextHolder.clearContext();
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        UserDetails userDetails;
         try {
-            userDetails = jwtUserDetailsService.loadUserByUsername(jwt.getSubject());
-        } catch (UsernameNotFoundException userNotFoundEx) {
+            final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+            if (header == null || !header.startsWith("Bearer ")) {
+                SecurityContextHolder.clearContext();
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            String token = header.substring(7);
+            DecodedJWT jwt = jwtTokenService.validateToken(token);
+            if (jwt == null || jwt.getSubject() == null) {
+                SecurityContextHolder.clearContext();
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(jwt.getSubject());
+
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        } catch (JWTVerificationException | UsernameNotFoundException ex) {
             SecurityContextHolder.clearContext();
-            filterChain.doFilter(request, response);
-            return;
         }
-
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities());
-        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }

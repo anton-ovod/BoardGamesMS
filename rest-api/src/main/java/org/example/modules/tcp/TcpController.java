@@ -12,7 +12,7 @@ import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
 
 @RestController
-@RequestMapping("/files")
+@RequestMapping("/tcp")
 public class TcpController {
     private final TcpClientService tcpClientService;
 
@@ -20,7 +20,7 @@ public class TcpController {
         this.tcpClientService = tcpClientService;
     }
 
-    @GetMapping
+    @GetMapping("/file")
     public ResponseEntity<FileContentResponse> GetFile(@RequestParam("name") String name)
     {
         if(!name.toLowerCase().endsWith(".txt") && !name.toLowerCase().endsWith(".json"))

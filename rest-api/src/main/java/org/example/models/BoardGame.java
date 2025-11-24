@@ -1,5 +1,6 @@
 package org.example.models;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.enums.Category;
@@ -13,7 +14,7 @@ import java.util.Locale;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@RequiredArgsConstructor
+@JacksonXmlRootElement(localName = "boardgame")
 public class BoardGame {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

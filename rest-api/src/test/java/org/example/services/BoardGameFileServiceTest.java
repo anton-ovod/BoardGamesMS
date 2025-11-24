@@ -3,6 +3,7 @@ package org.example.services;
 import org.example.enums.Category;
 import org.example.enums.GameStatus;
 import org.example.models.BoardGame;
+import org.example.modules.boardgames.BoardGameFileService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -18,27 +19,27 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("FileService Unit Tests")
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
-class FileServiceTest {
+class BoardGameFileServiceTest {
 
     @Autowired
-    FileService fileService;
+    BoardGameFileService boardGameFileService;
 
     @Test
     void givenFileExists_whenReadBoardGamesIO_thenReturnsNonEmptyList() {
-        List<BoardGame> games = fileService.readBoardGamesIO();
+        List<BoardGame> games = boardGameFileService.readBoardGamesIO();
         assertNotNull(games);
         assertFalse(games.isEmpty(), "Games list should not be empty");
     }
 
     @Test
     void givenFileNotFound_whenReadBoardGamesIO_thenReturnsEmptyList() {
-        List<BoardGame> games = fileService.readBoardGamesIO();
+        List<BoardGame> games = boardGameFileService.readBoardGamesIO();
         assertNotNull(games);
     }
 
     @Test
     void givenFileExists_whenReadBoardGamesNIO_thenReturnsValidList() {
-        List<BoardGame> games = fileService.readBoardGamesNIO();
+        List<BoardGame> games = boardGameFileService.readBoardGamesNIO();
         assertNotNull(games);
         assertAll("games validation",
                 () -> assertNotNull(games),
@@ -48,7 +49,7 @@ class FileServiceTest {
 
     @RepeatedTest(value = 3, name = "Repeated read/write test {currentRepetition}/{totalRepetitions}")
     void givenMultipleCalls_whenReadBoardGamesIO_thenHandlesCorrectly(RepetitionInfo repetitionInfo) {
-        List<BoardGame> games = fileService.readBoardGamesIO();
+        List<BoardGame> games = boardGameFileService.readBoardGamesIO();
         assertNotNull(games);
         assertTrue(repetitionInfo.getCurrentRepetition() <= 3);
     }
@@ -56,7 +57,7 @@ class FileServiceTest {
     @Test
     void givenNullList_whenSaveBoardGamesIO_thenThrowsNullPointerException() {
         assertThrows(NullPointerException.class, () -> {
-            fileService.saveBoardGamesIO(null);
+            boardGameFileService.saveBoardGamesIO(null);
         });
     }
 
@@ -71,14 +72,14 @@ class FileServiceTest {
         List<BoardGame> games = List.of(
                 new BoardGame(1L, "Test Game", "Desc", 2, 4, 10, 60, "Pub", category, status, 7.0)
         );
-        assertDoesNotThrow(() -> fileService.saveBoardGamesXML(games));
+        assertDoesNotThrow(() -> boardGameFileService.saveBoardGamesXML(games));
     }
 
 
     @Test
     void givenEmptyList_whenSaveBoardGamesIO_thenSavesSuccessfully() {
         List<BoardGame> emptyList = new ArrayList<>();
-        assertDoesNotThrow(() -> fileService.saveBoardGamesIO(emptyList));
+        assertDoesNotThrow(() -> boardGameFileService.saveBoardGamesIO(emptyList));
     }
 
     @Test
@@ -87,7 +88,7 @@ class FileServiceTest {
                 new BoardGame(1L, "Catan", "Settlers game", 3, 4, 10, 90, "Kosmos", Category.STRATEGY, GameStatus.AVAILABLE, 8.5),
                 new BoardGame(2L, "Pandemic", "Cooperative game", 2, 4, 8, 45, "Z-Man", Category.COOPERATIVE, GameStatus.RESERVED, 9.0)
         );
-        assertDoesNotThrow(() -> fileService.saveBoardGamesNIO(sampleGames));
+        assertDoesNotThrow(() -> boardGameFileService.saveBoardGamesNIO(sampleGames));
     }
 
     @ParameterizedTest
@@ -97,13 +98,13 @@ class FileServiceTest {
         for (int i = 0; i < size; i++) {
             games.add(new BoardGame((long) i, "Game" + i, "Desc", 2, 4, 10, 60, "Pub", Category.STRATEGY, GameStatus.AVAILABLE, 7.0));
         }
-        assertDoesNotThrow(() -> fileService.saveBoardGamesIO(games));
+        assertDoesNotThrow(() -> boardGameFileService.saveBoardGamesIO(games));
     }
 
     @Test
     void givenNullList_whenSaveBoardGamesNIO_thenThrowsNullPointerException() {
         assertThrows(NullPointerException.class, () -> {
-            fileService.saveBoardGamesNIO(null);
+            boardGameFileService.saveBoardGamesNIO(null);
         });
     }
 

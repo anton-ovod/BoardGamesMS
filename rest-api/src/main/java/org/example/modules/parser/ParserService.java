@@ -1,8 +1,8 @@
-package org.example.services;
+package org.example.modules.parser;
 
 import org.example.models.Employee;
 import org.example.models.Holiday;
-import org.example.models.ParsedData;
+import org.example.dtos.ParsedData;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

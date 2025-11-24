@@ -24,7 +24,7 @@ public class BorrowingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Borrowing> getById(@PathVariable Long id) {
+    public ResponseEntity<Borrowing> getById(@PathVariable("id") Long id) {
         Borrowing borrowing = borrowingService.getById(id);
         return borrowing == null ?
                 ResponseEntity.notFound().build() :
@@ -37,7 +37,7 @@ public class BorrowingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Borrowing> update(@PathVariable Long id, @RequestBody Borrowing borrowing) {
+    public ResponseEntity<Borrowing> update(@PathVariable("id") Long id, @RequestBody Borrowing borrowing) {
         borrowing.setId(id);
         Borrowing updated = borrowingService.update(borrowing);
         return updated != null ?
@@ -46,7 +46,7 @@ public class BorrowingController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         Borrowing deleted = borrowingService.delete(id);
         return deleted != null ?
                 ResponseEntity.noContent().build() :

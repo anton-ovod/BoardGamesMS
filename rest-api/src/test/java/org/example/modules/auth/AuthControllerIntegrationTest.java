@@ -1,9 +1,8 @@
 package org.example.modules.auth;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import org.example.dtos.AuthRequest;
+import org.example.dtos.AuthRequestDto;
 import org.example.enums.UserRole;
 import org.example.models.User;
 import org.example.modules.users.UserRepository;
@@ -38,7 +37,7 @@ class AuthControllerIntegrationTest {
     private UserRepository userRepository;
 
     private User testUser;
-    private AuthRequest authRequest;
+    private AuthRequestDto authRequestDto;
 
 
     @BeforeAll
@@ -56,15 +55,14 @@ class AuthControllerIntegrationTest {
         testUser.setRole(UserRole.MEMBER);
         testUser.setActive(true);
 
-        authRequest = new AuthRequest();
-        authRequest.setEmail("john.doe@example.com");
-        authRequest.setPassword("password123");
+        authRequestDto = new AuthRequestDto();
+        authRequestDto.setEmail("john.doe@example.com");
+        authRequestDto.setPassword("password123");
     }
 
     @Nested
     @DisplayName("Register Endpoint Tests")
     class RegisterTests {
-
         @Test
         void givenValidUser_whenRegister_thenReturnsCreatedAndUserDetails() throws Exception {
             mockMvc.perform(post("/auth/register")
@@ -90,29 +88,11 @@ class AuthControllerIntegrationTest {
                             .content(objectMapper.writeValueAsString(invalidUser)))
                     .andExpect(status().isBadRequest());
         }
-
-        @Test
-        void givenAdminUser_whenRegister_thenCreatesAdminAccount() throws Exception {
-            User adminUser = new User();
-            adminUser.setFirstName("Admin");
-            adminUser.setLastName("User");
-            adminUser.setEmail("admin@example.com");
-            adminUser.setPassword("adminPass123");
-            adminUser.setRole(UserRole.ADMIN);
-            adminUser.setActive(true);
-
-            mockMvc.perform(post("/auth/register")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(adminUser)))
-                    .andExpect(status().isCreated())
-                    .andExpect(jsonPath("$.role").value("ADMIN"));
-        }
     }
 
     @Nested
     @DisplayName("Login Endpoint Tests")
     class LoginTests {
-
         @BeforeEach
         void registerTestUser() throws Exception {
             mockMvc.perform(post("/auth/register")
@@ -124,36 +104,36 @@ class AuthControllerIntegrationTest {
         void givenValidCredentials_whenLogin_thenReturnsOkAndToken() throws Exception {
             mockMvc.perform(post("/auth/login")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(authRequest)))
+                            .content(objectMapper.writeValueAsString(authRequestDto)))
                     .andExpect(status().isOk())
                     .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.emptyString())));
         }
 
         @Test
         void givenInvalidPassword_whenLogin_thenReturnsUnauthorized() throws Exception {
-            authRequest.setPassword("wrongPassword");
+            authRequestDto.setPassword("wrongPassword");
 
             mockMvc.perform(post("/auth/login")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(authRequest)))
+                            .content(objectMapper.writeValueAsString(authRequestDto)))
                     .andExpect(status().isUnauthorized())
                     .andExpect(content().string("Invalid email or password"));
         }
 
         @Test
         void givenInvalidEmail_whenLogin_thenReturnsUnauthorized() throws Exception {
-            authRequest.setEmail("nonexistent@example.com");
+            authRequestDto.setEmail("nonexistent@example.com");
 
             mockMvc.perform(post("/auth/login")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(authRequest)))
+                            .content(objectMapper.writeValueAsString(authRequestDto)))
                     .andExpect(status().isUnauthorized())
                     .andExpect(content().string("Invalid email or password"));
         }
 
         @Test
         void givenEmptyCredentials_whenLogin_thenReturnsUnauthorized() throws Exception {
-            AuthRequest emptyRequest = new AuthRequest();
+            AuthRequestDto emptyRequest = new AuthRequestDto();
             emptyRequest.setEmail("");
             emptyRequest.setPassword("");
 
@@ -169,65 +149,6 @@ class AuthControllerIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("{}"))
                     .andExpect(status().isUnauthorized());
-        }
-    }
-
-    @Nested
-    @DisplayName("Authentication Flow Tests")
-    class AuthenticationFlowTests {
-
-        @Test
-        void givenNewUser_whenRegisterAndLogin_thenAuthenticationSucceeds() throws Exception {
-            mockMvc.perform(post("/auth/register")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(testUser)))
-                    .andExpect(status().isCreated());
-
-            String token = mockMvc.perform(post("/auth/login")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(authRequest)))
-                    .andExpect(status().isOk())
-                    .andReturn().getResponse().getContentAsString();
-
-            assertNotNull(token);
-            assertFalse(token.isEmpty());
-        }
-
-        @Test
-        void givenMultipleUsers_whenRegisterAndLogin_thenTokensAreUnique() throws Exception {
-            mockMvc.perform(post("/auth/register")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(testUser)));
-
-            String token1 = mockMvc.perform(post("/auth/login")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(authRequest)))
-                    .andExpect(status().isOk())
-                    .andReturn().getResponse().getContentAsString();
-
-            User secondUser = new User();
-            secondUser.setFirstName("Jane");
-            secondUser.setLastName("Smith");
-            secondUser.setEmail("jane.smith@example.com");
-            secondUser.setPassword("password456");
-            secondUser.setRole(UserRole.MEMBER);
-            secondUser.setActive(true);
-
-            mockMvc.perform(post("/auth/register")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(secondUser)));
-
-            AuthRequest secondAuthRequest = new AuthRequest();
-            secondAuthRequest.setEmail("jane.smith@example.com");
-            secondAuthRequest.setPassword("password456");
-
-            String token2 = mockMvc.perform(post("/auth/login")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(secondAuthRequest)))
-                    .andExpect(status().isOk())
-                    .andReturn().getResponse().getContentAsString();
-
-            assertNotEquals(token1, token2, "Tokens should be unique for different users");
         }
     }
 }

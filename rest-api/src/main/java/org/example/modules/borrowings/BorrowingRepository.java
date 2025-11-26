@@ -64,7 +64,12 @@ public class BorrowingRepository {
 
     public Borrowing findById(Long id) {
         try (Session session = sessionFactory.openSession()) {
-            return session.get(Borrowing.class, id);
+            List<Borrowing> list = session.createQuery(
+                    "select b from Borrowing b left join fetch b.user left join fetch b.game where b.id = :id",
+                    Borrowing.class)
+                    .setParameter("id", id)
+                    .getResultList();
+            return list.isEmpty() ? null : list.get(0);
         }
     }
 
@@ -77,6 +82,26 @@ public class BorrowingRepository {
 
             TypedQuery<Borrowing> allQuery = session.createQuery(all);
             return allQuery.getResultList();
+        }
+    }
+
+    public List<Borrowing> findByUserId(Long userId) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery(
+                    "select b from Borrowing b left join fetch b.user left join fetch b.game where b.userId = :uid",
+                    Borrowing.class)
+                    .setParameter("uid", userId)
+                    .getResultList();
+        }
+    }
+
+    public List<Borrowing> findByGameId(Long gameId) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery(
+                    "select b from Borrowing b left join fetch b.user left join fetch b.game where b.gameId = :gid",
+                    Borrowing.class)
+                    .setParameter("gid", gameId)
+                    .getResultList();
         }
     }
 }

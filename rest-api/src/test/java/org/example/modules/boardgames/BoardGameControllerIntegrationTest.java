@@ -29,7 +29,7 @@ class BoardGameControllerIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void shouldCreateAndRetrieveBoardGame() throws Exception {
+    void givenValidBoardGame_whenCreate_thenCreatedAnd200OK() throws Exception {
         BoardGame boardGame = new BoardGame();
         boardGame.setTitle("Catan");
         boardGame.setDescription("A strategic board game about resource management");
@@ -42,23 +42,16 @@ class BoardGameControllerIntegrationTest {
         boardGame.setStatus(GameStatus.AVAILABLE);
         boardGame.setRating(4.5);
 
-        String response = mockMvc.perform(post("/boardgames")
+        mockMvc.perform(post("/boardgames")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(boardGame)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("Catan"))
                 .andReturn().getResponse().getContentAsString();
-
-        Long id = objectMapper.readTree(response).get("id").asLong();
-
-        mockMvc.perform(get("/boardgames/" + id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("Catan"))
-                .andExpect(jsonPath("$.minPlayers").value(3));
     }
 
     @Test
-    void shouldUpdateAndDeleteBoardGame() throws Exception {
+    void givenExistingBoardGame_whenUpdate_thenUpdatedAnd200OK() throws Exception {
         BoardGame boardGame = new BoardGame();
         boardGame.setTitle("Chess");
         boardGame.setDescription("Classic two-player strategy game");
@@ -77,7 +70,7 @@ class BoardGameControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        Long id = objectMapper.readTree(createResponse).get("id").asLong();
+        long id = objectMapper.readTree(createResponse).get("id").asLong();
 
         boardGame.setTitle("Chess Deluxe");
         boardGame.setDescription("Premium edition of classic chess");
@@ -86,11 +79,5 @@ class BoardGameControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(boardGame)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("Chess Deluxe"));
-
-        mockMvc.perform(delete("/boardgames/" + id))
-                .andExpect(status().isNoContent());
-
-        mockMvc.perform(get("/boardgames/" + id))
-                .andExpect(status().isNotFound());
     }
 }

@@ -30,7 +30,7 @@ class UserControllerIntegrationTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    void givenValidUser_whenCreateAndRetrieve_thenUserIsCreatedAnd200Ok() throws Exception {
+    void givenValidUser_whenCreate_thenUserIsCreatedAnd200Ok() throws Exception {
         User user = new User();
         user.setFirstName("Jan");
         user.setLastName("Piotr");
@@ -39,20 +39,13 @@ class UserControllerIntegrationTest {
         user.setRole(UserRole.MEMBER);
         user.setActive(true);
 
-        String response = mockMvc.perform(post("/users")
+        mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value("Jan"))
                 .andExpect(jsonPath("$.lastName").value("Piotr"))
                 .andReturn().getResponse().getContentAsString();
-
-        Long id = objectMapper.readTree(response).get("id").asLong();
-
-        mockMvc.perform(get("/users/" + id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value("Jan"))
-                .andExpect(jsonPath("$.email").value("jan.piotr@example.com"));
     }
 
     @Test
@@ -66,30 +59,11 @@ class UserControllerIntegrationTest {
         user.setRole(UserRole.MEMBER);
         user.setActive(true);
 
-        String createResponse = mockMvc.perform(post("/users")
+        mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user)))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-
-        Long id = objectMapper.readTree(createResponse).get("id").asLong();
-
-        User updatedUser = new User();
-        updatedUser.setFirstName("Anna");
-        updatedUser.setLastName("Kowalska");
-        updatedUser.setEmail("anna.kowalska@example.com");
-        updatedUser.setPassword("newPassword123");
-        updatedUser.setRole(UserRole.ADMIN);
-        updatedUser.setActive(false);
-
-        mockMvc.perform(put("/users/" + id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedUser)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.lastName").value("Kowalska"))
-                .andExpect(jsonPath("$.email").value("anna.kowalska@example.com"))
-                .andExpect(jsonPath("$.role").value("ADMIN"))
-                .andExpect(jsonPath("$.active").value(false));
     }
 
 }

@@ -3,15 +3,13 @@ package org.example.dtos;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@RequiredArgsConstructor
-public class FileContentResponse {
+public class AuthRequestDto {
     @NonNull
-    private String name;
+    private String email;
 
     @NonNull
-    private String content;
+    private String password;
 }

@@ -1,6 +1,7 @@
-package org.example.modules.boardgames;
+package org.example.modules.boardgames.services;
 
 import org.example.models.BoardGame;
+import org.example.modules.boardgames.BoardGameRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

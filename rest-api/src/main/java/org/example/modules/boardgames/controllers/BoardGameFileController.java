@@ -1,6 +1,7 @@
-package org.example.modules.boardgames;
+package org.example.modules.boardgames.controllers;
 
 import org.example.models.BoardGame;
+import org.example.modules.boardgames.services.BoardGameFileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

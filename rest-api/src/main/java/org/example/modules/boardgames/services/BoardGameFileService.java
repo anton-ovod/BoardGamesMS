@@ -1,4 +1,4 @@
-package org.example.modules.boardgames;
+package org.example.modules.boardgames.services;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;

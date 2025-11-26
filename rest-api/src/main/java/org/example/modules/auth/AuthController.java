@@ -1,6 +1,7 @@
 package org.example.modules.auth;
 
-import org.example.dtos.AuthRequest;
+import org.example.dtos.AuthRequestDto;
+import org.example.dtos.UserDto;
 import org.example.models.User;
 import org.example.modules.auth.jwt.JwtTokenService;
 import org.example.modules.auth.jwt.JwtUserDetailsService;
@@ -31,16 +32,16 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<String> login(@RequestBody AuthRequestDto authRequestDto) {
         try{
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    authRequest.getEmail(), authRequest.getPassword()));
+                    authRequestDto.getEmail(), authRequestDto.getPassword()));
         }
         catch (Exception ex){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
 
-        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(authRequest.getEmail());
+        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(authRequestDto.getEmail());
         String jwtToken = jwtTokenService.generateToken(userDetails);
         return jwtToken != null ?
                 ResponseEntity.ok(jwtToken) :
@@ -48,10 +49,10 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
+    public ResponseEntity<UserDto> register(@RequestBody User user) {
         User createdUser = userService.create(user);
         return createdUser != null ?
-                ResponseEntity.status(HttpStatus.CREATED).body(createdUser) :
+                ResponseEntity.status(HttpStatus.CREATED).body(new UserDto(createdUser)) :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }

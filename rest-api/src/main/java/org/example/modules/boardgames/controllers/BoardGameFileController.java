@@ -34,7 +34,7 @@ public class BoardGameFileController {
         try {
             fileService.saveTxt(games);
             return ResponseEntity
-                    .created(URI.create("/boardgames/file/txt"))
+                    .created(URI.create("/boardgames/files/txt"))
                     .build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

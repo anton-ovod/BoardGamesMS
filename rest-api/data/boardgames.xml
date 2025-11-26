@@ -1,29 +1,41 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<boardGames>
-    <boardGame>
-        <id>1</id>
-        <title>Catan</title>
-        <description>Build</description>
-        <minPlayers>3</minPlayers>
-        <maxPlayers>4</maxPlayers>
-        <recommendedAge>10</recommendedAge>
-        <playingTimeMinutes>90</playingTimeMinutes>
-        <publisher>Cosmos</publisher>
-        <category>STRATEGY</category>
-        <status>AVAILABLE</status>
-        <rating>8.5</rating>
-    </boardGame>
-    <boardGame>
-        <id>2</id>
-        <title>Carcassonne</title>
-        <description>BuildBuildBuild</description>
-        <minPlayers>2</minPlayers>
-        <maxPlayers>5</maxPlayers>
-        <recommendedAge>8</recommendedAge>
-        <playingTimeMinutes>45</playingTimeMinutes>
-        <publisher>Hans im Glück</publisher>
-        <category>FAMILY</category>
-        <status>AVAILABLE</status>
-        <rating>8.2</rating>
-    </boardGame>
-</boardGames>
+<ArrayList>
+  <item>
+    <id>1</id>
+    <title>Catan</title>
+    <description>Build</description>
+    <minPlayers>3</minPlayers>
+    <maxPlayers>4</maxPlayers>
+    <recommendedAge>10</recommendedAge>
+    <playingTimeMinutes>90</playingTimeMinutes>
+    <publisher>Cosmos</publisher>
+    <category>STRATEGY</category>
+    <status>AVAILABLE</status>
+    <rating>8.5</rating>
+  </item>
+  <item>
+    <id>2</id>
+    <title>Carcassonne</title>
+    <description>BuildBuildBuild</description>
+    <minPlayers>2</minPlayers>
+    <maxPlayers>5</maxPlayers>
+    <recommendedAge>8</recommendedAge>
+    <playingTimeMinutes>45</playingTimeMinutes>
+    <publisher>Hans im Glück</publisher>
+    <category>FAMILY</category>
+    <status>AVAILABLE</status>
+    <rating>8.2</rating>
+  </item>
+  <item>
+    <id>123</id>
+    <title>Catan</title>
+    <description>Strategy and trading board game</description>
+    <minPlayers>3</minPlayers>
+    <maxPlayers>4</maxPlayers>
+    <recommendedAge>10</recommendedAge>
+    <playingTimeMinutes>90</playingTimeMinutes>
+    <publisher>Kosmos</publisher>
+    <category>STRATEGY</category>
+    <status>AVAILABLE</status>
+    <rating>0.0</rating>
+  </item>
+</ArrayList>

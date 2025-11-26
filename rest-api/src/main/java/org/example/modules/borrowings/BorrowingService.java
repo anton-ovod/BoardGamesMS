@@ -32,4 +32,12 @@ public class BorrowingService {
     public List<Borrowing> getAll() {
         return repository.findAll();
     }
+
+    public List<Borrowing> getByUserId(Long userId) {
+        return repository.findByUserId(userId);
+    }
+
+    public List<Borrowing> getByGameId(Long gameId) {
+        return repository.findByGameId(gameId);
+    }
 }

@@ -26,10 +26,6 @@ public class UserService {
         return repo.read(id);
     }
 
-    public User readByEmail(String email) {
-        return repo.readByEmail(email);
-    }
-
     public List<User> readAll() {
         return repo.readAll();
     }

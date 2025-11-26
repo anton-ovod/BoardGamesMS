@@ -1,7 +1,7 @@
 package org.example.modules.tcp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.dtos.FileContentResponse;
+import org.example.dtos.FileContentResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +21,7 @@ public class TcpController {
     }
 
     @GetMapping("/file")
-    public ResponseEntity<FileContentResponse> GetFile(@RequestParam("name") String name)
+    public ResponseEntity<FileContentResponseDto> GetFile(@RequestParam("name") String name)
     {
         if(!name.toLowerCase().endsWith(".txt") && !name.toLowerCase().endsWith(".json"))
         {
@@ -37,10 +37,10 @@ public class TcpController {
             {
                 ObjectMapper objectMapper = new ObjectMapper();
                 Object json = objectMapper.readValue(text, Object.class);
-                return ResponseEntity.ok(new FileContentResponse(name, json.toString()));
+                return ResponseEntity.ok(new FileContentResponseDto(name, json.toString()));
             }
 
-            return ResponseEntity.ok(new FileContentResponse(name, text));
+            return ResponseEntity.ok(new FileContentResponseDto(name, text));
         }
         catch (FileNotFoundException e)
         {

@@ -1,7 +1,9 @@
 package org.example.modules.boardgames.controllers;
 
+import org.example.builders.BoardGameReport;
 import org.example.models.BoardGame;
 import org.example.modules.boardgames.services.BoardGameService;
+import org.example.modules.borrowings.BorrowingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +14,11 @@ import java.util.List;
 public class BoardGameController {
 
     private final BoardGameService service;
+    private final BorrowingService borrowingService;
 
-    public BoardGameController(BoardGameService service) {
+    public BoardGameController(BoardGameService service, BorrowingService borrowingService) {
         this.service = service;
+        this.borrowingService = borrowingService;
     }
 
     @PostMapping
@@ -45,5 +49,19 @@ public class BoardGameController {
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         int rows = service.delete(id);
         return rows > 0 ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{id}/report")
+    public ResponseEntity<BoardGameReport> getReport(@PathVariable("id") Long id) {
+        BoardGame game = service.read(id);
+        if (game == null) return ResponseEntity.notFound().build();
+
+        var borrowings = borrowingService.getByGameId(id);
+        BoardGameReport report = BoardGameReport.builder()
+                .game(game)
+                .borrowings(borrowings)
+                .build();
+
+        return ResponseEntity.ok(report);
     }
 }

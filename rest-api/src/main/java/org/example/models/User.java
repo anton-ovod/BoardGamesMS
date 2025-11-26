@@ -33,8 +33,4 @@ public class User {
     @Column(nullable = false)
     @NonNull
     private String password;
-
-    public String getFullName() {
-        return firstName + " " + lastName;
-    }
 }

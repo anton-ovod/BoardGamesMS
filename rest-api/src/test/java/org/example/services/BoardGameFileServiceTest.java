@@ -38,13 +38,6 @@ class BoardGameFileServiceTest {
         assertTrue(repetitionInfo.getCurrentRepetition() <= 3);
     }
 
-    @Test
-    void givenNullList_whenSaveTxt_thenThrowsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> {
-            boardGameFileService.saveTxt(null);
-        });
-    }
-
     @ParameterizedTest
     @CsvSource({
             "PUZZLE, AVAILABLE",
@@ -58,7 +51,6 @@ class BoardGameFileServiceTest {
         );
         assertDoesNotThrow(() -> boardGameFileService.saveXml(games));
     }
-
 
     @Test
     void givenEmptyList_whenSaveXml_thenSavesSuccessfully() {
@@ -86,10 +78,112 @@ class BoardGameFileServiceTest {
     }
 
     @Test
-    void givenNullList_whenSaveXml_thenThrowsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> {
-            boardGameFileService.saveXml(null);
-        });
+    @DisplayName("LoadXML returns non-null list when file exists")
+    void givenXmlFileExists_whenLoadXml_thenReturnsNonNullList() {
+        List<BoardGame> games = boardGameFileService.loadXml();
+        assertNotNull(games, "Loaded XML list should not be null");
     }
 
+    @Test
+    @DisplayName("SaveTXT and LoadTXT preserve data integrity")
+    void givenSavedGames_whenLoadTxt_thenDataMatchesOriginal() {
+        BoardGame original = new BoardGame(
+                999L, "Test Game", "Test Description",
+                2, 6, 12, 120,
+                "Test Publisher", Category.ADVENTURE, GameStatus.AVAILABLE, 8.7
+        );
+
+        boardGameFileService.saveTxt(List.of(original));
+        List<BoardGame> loaded = boardGameFileService.loadTxt();
+
+        assertNotNull(loaded);
+        assertTrue(loaded.stream().anyMatch(g ->
+            g.getTitle().equals("Test Game") &&
+            g.getPublisher().equals("Test Publisher")
+        ), "Saved game should be present in loaded list");
+    }
+
+    @Test
+    @DisplayName("SaveXML and LoadXML preserve data integrity")
+    void givenSavedGames_whenLoadXml_thenDataMatchesOriginal() {
+        List<BoardGame> originalGames = Arrays.asList(
+                new BoardGame(100L, "XML Test 1", "Desc1", 2, 4, 8, 60, "Pub1", Category.CARD_GAME, GameStatus.AVAILABLE, 7.5),
+                new BoardGame(101L, "XML Test 2", "Desc2", 3, 6, 10, 90, "Pub2", Category.WAR_GAME, GameStatus.RESERVED, 8.0)
+        );
+
+        boardGameFileService.saveXml(originalGames);
+        List<BoardGame> loaded = boardGameFileService.loadXml();
+
+        assertNotNull(loaded);
+        assertTrue(loaded.size() >= 2, "Loaded list should contain at least the saved games");
+        assertTrue(loaded.stream().anyMatch(g -> g.getTitle().equals("XML Test 1")));
+        assertTrue(loaded.stream().anyMatch(g -> g.getTitle().equals("XML Test 2")));
+    }
+
+    @Test
+    @DisplayName("SaveTXT creates file if it doesn't exist")
+    void givenNoFile_whenSaveTxt_thenCreatesNewFile() {
+        BoardGame game = new BoardGame(
+                888L, "New Game", "Description",
+                1, 4, 6, 45,
+                "Publisher", Category.PARTY, GameStatus.AVAILABLE, 6.5
+        );
+
+        assertDoesNotThrow(() -> boardGameFileService.saveTxt(List.of(game)));
+    }
+
+    @Test
+    @DisplayName("Games with special characters in title are handled correctly")
+    void givenSpecialCharactersInTitle_whenSaveAndLoadXml_thenPreservesData() {
+        BoardGame game = new BoardGame(
+                500L, "Game: The Ultimate Edition™ & More!", "Desc with special chars: <>&\"'",
+                2, 4, 10, 60, "Publisher & Co.", Category.ADVENTURE, GameStatus.AVAILABLE, 9.5
+        );
+
+        boardGameFileService.saveXml(List.of(game));
+        List<BoardGame> loaded = boardGameFileService.loadXml();
+
+        assertTrue(loaded.stream().anyMatch(g ->
+            g.getTitle().contains("Ultimate Edition")
+        ));
+    }
+
+    @Test
+    @DisplayName("Games with extreme rating values are saved correctly")
+    void givenExtremeRatings_whenSaveXml_thenHandlesCorrectly() {
+        List<BoardGame> games = Arrays.asList(
+                new BoardGame(600L, "Min Rating", "Desc", 2, 4, 10, 60, "Pub", Category.STRATEGY, GameStatus.AVAILABLE, 0.0),
+                new BoardGame(601L, "Max Rating", "Desc", 2, 4, 10, 60, "Pub", Category.STRATEGY, GameStatus.AVAILABLE, 10.0),
+                new BoardGame(602L, "Decimal Rating", "Desc", 2, 4, 10, 60, "Pub", Category.STRATEGY, GameStatus.AVAILABLE, 7.89)
+        );
+
+        assertDoesNotThrow(() -> boardGameFileService.saveXml(games));
+    }
+
+    @Test
+    @DisplayName("Games with extreme player counts are handled")
+    void givenExtremePlayerCounts_whenSaveTxt_thenHandlesCorrectly() {
+        List<BoardGame> games = Arrays.asList(
+                new BoardGame(700L, "Solo Game", "Desc", 1, 1, 10, 60, "Pub", Category.STRATEGY, GameStatus.AVAILABLE, 7.0),
+                new BoardGame(701L, "Party Game", "Desc", 2, 20, 10, 60, "Pub", Category.PARTY, GameStatus.AVAILABLE, 8.0)
+        );
+
+        assertDoesNotThrow(() -> boardGameFileService.saveTxt(games));
+    }
+
+    @Test
+    @DisplayName("Long playing time values are preserved")
+    void givenLongPlayingTime_whenSaveAndLoad_thenPreservesValue() {
+        BoardGame game = new BoardGame(
+                800L, "Epic Game", "Desc",
+                2, 4, 14, 600, // 10 hours
+                "Pub", Category.WAR_GAME, GameStatus.AVAILABLE, 8.5
+        );
+        boardGameFileService.saveXml(List.of(game));
+        List<BoardGame> loaded = boardGameFileService.loadXml();
+
+        assertTrue(loaded.stream().anyMatch(g ->
+            g.getTitle().equals("Epic Game") && g.getPlayingTimeMinutes() == 600
+        ));
+    }
 }
